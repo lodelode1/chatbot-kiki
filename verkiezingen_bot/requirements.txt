@@ -1,0 +1,21 @@
+# Scraper
+requests
+beautifulsoup4
+
+# PDF parsing
+pymupdf
+
+# Embeddings (lokaal)
+sentence-transformers
+
+# Vector store
+faiss-cpu
+
+# LLM (lokaal via Ollama)
+ollama
+
+# UI
+streamlit
+
+# Utilities
+tqdm
