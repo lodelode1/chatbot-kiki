@@ -19,18 +19,11 @@ FAISS_INDEX_FILE = INDEX_DIR / "faiss.index"
 CHUNKS_FILE = INDEX_DIR / "chunks.pkl"
 
 EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-LLM_MODEL = "mistral"
-TOP_K = 5  # Aantal relevante chunks om mee te sturen
+LLM_MODEL = "qwen2.5:3b"
+TOP_K = 3  # Aantal relevante chunks om mee te sturen
+MAX_CONTEXT_CHARS = 2000  # Beperk totale context voor snelheid
 
-SYSTEM_PROMPT = """Je bent een behulpzame assistent die vragen beantwoordt over de gemeenteraadsverkiezingen 2026 in Nederland. Je gebruikt ALLEEN de aangeleverde bronpassages om antwoord te geven.
-
-STRIKTE REGELS:
-1. Baseer je antwoord UITSLUITEND op de aangeleverde passages. Verzin NIETS.
-2. Vermeld altijd de bron(nen) waar je het antwoord op baseert.
-3. Als het antwoord niet in de passages staat, zeg dan: "Ik kan het antwoord op deze vraag niet vinden in de Toolkit Verkiezingen."
-4. Antwoord in het Nederlands.
-5. Wees beknopt maar volledig.
-6. Gebruik de bronvermelding in het format: [Bron: titel van het document]"""
+SYSTEM_PROMPT = """Je bent een assistent over de gemeenteraadsverkiezingen 2026. Beantwoord de vraag ALLEEN op basis van de bronpassages. Vermeld de bron. Als het antwoord er niet in staat, zeg: "Ik kan dit niet vinden in de Toolkit Verkiezingen." Antwoord beknopt in het Nederlands."""
 
 
 class QAEngine:
@@ -71,15 +64,22 @@ class QAEngine:
         return results
 
     def build_context(self, chunks: list[dict]) -> str:
-        """Bouw de context-tekst op uit gevonden chunks."""
+        """Bouw de context-tekst op uit gevonden chunks, beperkt tot MAX_CONTEXT_CHARS."""
         context_parts = []
+        total_chars = 0
         for i, chunk in enumerate(chunks, 1):
-            context_parts.append(
-                f"--- Passage {i} ---\n"
-                f"Bron: {chunk['titel']}\n"
-                f"Sectie: {chunk['sectie']}\n"
-                f"Tekst: {chunk['text']}\n"
+            part = (
+                f"[{i}] {chunk['titel']}\n"
+                f"{chunk['text']}\n"
             )
+            if total_chars + len(part) > MAX_CONTEXT_CHARS:
+                # Voeg nog een afgekapt stuk toe als er ruimte is
+                remaining = MAX_CONTEXT_CHARS - total_chars
+                if remaining > 100:
+                    context_parts.append(part[:remaining] + "...")
+                break
+            context_parts.append(part)
+            total_chars += len(part)
         return "\n".join(context_parts)
 
     def ask(self, question: str) -> dict:
