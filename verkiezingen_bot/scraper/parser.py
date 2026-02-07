@@ -131,11 +131,22 @@ def run():
 
         passages = []
 
-        # Parse PDF als die er is
-        pdf_file = item.get("pdf_file")
-        if pdf_file and Path(pdf_file).exists():
-            passages = parse_pdf(pdf_file)
-            pdf_count += 1
+        # Parse alle PDF's als die er zijn
+        pdf_files = item.get("pdf_files", [])
+        if not pdf_files:
+            # Backwards compatibility: enkel pdf_file veld
+            single = item.get("pdf_file")
+            if single:
+                pdf_files = [single]
+        for pdf_file in pdf_files:
+            if Path(pdf_file).exists():
+                pdf_passages = parse_pdf(pdf_file)
+                # Voeg bestandsnaam toe zodat versies te onderscheiden zijn
+                pdf_name = Path(pdf_file).stem
+                for p in pdf_passages:
+                    p["bron_bestand"] = pdf_name
+                passages.extend(pdf_passages)
+                pdf_count += 1
 
         # Parse HTML als er geen PDF is, of als het een subpagina is
         html_file = item.get("html_file")

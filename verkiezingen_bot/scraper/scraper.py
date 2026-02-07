@@ -111,52 +111,51 @@ def get_document_links(soup: BeautifulSoup, page_url: str) -> list[dict]:
     return documents
 
 
-def download_pdf_from_page(doc_url: str) -> str | None:
+def download_pdfs_from_page(doc_url: str, soup: BeautifulSoup | None = None) -> list[str]:
     """
-    Bezoek een documentpagina en download het PDF-bestand als dat er is.
-    Retourneert het pad naar het gedownloade bestand, of None.
+    Bezoek een documentpagina en download ALLE PDF-bestanden.
+    Retourneert een lijst met paden naar gedownloade bestanden.
     """
-    soup = get_soup(doc_url)
+    if soup is None:
+        soup = get_soup(doc_url)
     if not soup:
-        return None
+        return []
 
     # Zoek naar directe PDF-links op de pagina
     pdf_links = []
     for link in soup.find_all("a", href=True):
         href = link["href"]
         if href.lower().endswith(".pdf"):
-            pdf_links.append(urljoin(doc_url, href))
-
-    # Zoek ook naar download-knoppen/links
-    for link in soup.find_all("a", href=True):
-        href = link["href"]
-        full = urljoin(doc_url, href)
-        classes = " ".join(link.get("class", []))
-        text = link.get_text(strip=True).lower()
-        if ("download" in classes or "download" in text) and full not in pdf_links:
-            pdf_links.append(full)
+            full_url = urljoin(doc_url, href)
+            if full_url not in pdf_links:
+                pdf_links.append(full_url)
 
     if not pdf_links:
-        return None
+        return []
 
-    # Download de eerste PDF
-    pdf_url = pdf_links[0]
-    try:
-        time.sleep(REQUEST_DELAY)
-        response = requests.get(pdf_url, headers=HEADERS, timeout=60)
-        response.raise_for_status()
+    # Download alle PDF's
+    downloaded = []
+    for pdf_url in pdf_links:
+        # Sla over als al gedownload
+        filename = safe_filename(pdf_url, ".pdf")
+        filepath = RAW_PDF_DIR / filename
+        if filepath.exists():
+            downloaded.append(str(filepath))
+            continue
 
-        # Bepaal bestandsnaam
-        content_type = response.headers.get("content-type", "")
-        if "pdf" in content_type or pdf_url.lower().endswith(".pdf"):
-            filename = safe_filename(pdf_url, ".pdf")
-            filepath = RAW_PDF_DIR / filename
-            filepath.write_bytes(response.content)
-            return str(filepath)
-    except requests.RequestException as e:
-        print(f"  FOUT bij downloaden PDF {pdf_url}: {e}")
+        try:
+            time.sleep(REQUEST_DELAY)
+            response = requests.get(pdf_url, headers=HEADERS, timeout=60)
+            response.raise_for_status()
 
-    return None
+            content_type = response.headers.get("content-type", "")
+            if "pdf" in content_type or pdf_url.lower().endswith(".pdf"):
+                filepath.write_bytes(response.content)
+                downloaded.append(str(filepath))
+        except requests.RequestException as e:
+            print(f"  FOUT bij downloaden PDF {pdf_url}: {e}")
+
+    return downloaded
 
 
 def save_html(url: str, soup: BeautifulSoup) -> str:
@@ -249,12 +248,13 @@ def run():
             main_content = soup.find("main") or soup.find("article") or soup
             doc["has_page_content"] = len(main_content.get_text(strip=True)) > 100
 
-        # Probeer PDF te downloaden
-        pdf_path = download_pdf_from_page(doc["url"])
-        if pdf_path:
-            doc["pdf_file"] = pdf_path
+        # Download alle PDF's van de pagina
+        pdf_paths = download_pdfs_from_page(doc["url"], soup)
+        if pdf_paths:
+            doc["pdf_files"] = pdf_paths
+            doc["pdf_file"] = pdf_paths[0]  # Eerste voor backwards compatibility
             doc["type"] = "pdf"
-            pdf_count += 1
+            pdf_count += len(pdf_paths)
         else:
             doc["type"] = "webpagina"
 
