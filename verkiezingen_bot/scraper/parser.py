@@ -18,6 +18,20 @@ METADATA_FILE = DATA_DIR / "metadata.json"
 CLEAN_DIR = DATA_DIR / "clean"
 OUTPUT_FILE = CLEAN_DIR / "passages.json"
 
+# Patronen voor footer-tekst die van passages gestript moet worden
+FOOTER_MARKERS = [
+    "Meer informatie\nMeer informatie over het organiseren van verkiezingen",
+    "Meer informatie\nHeb je nog vragen over de organisatie van verkiezingen",
+    "Meer informatie\nHeb je vragen over de organisatie van verkiezingen",
+    "Meer informatie Meer informatie over het organiseren van verkiezingen",
+    "Meer informatie Heb je nog vragen over de organisatie van verkiezingen",
+    "Meer informatie Heb je vragen over de organisatie van verkiezingen",
+    "Wil je de Nieuwsbrief Verkiezingen zelf ook ontvangen?",
+    "Deze e-mail is verstuurd aan",
+    "Vragen over de organisatie van verkiezingen?Neem contact op met het",
+    "Vragen over de organisatie van verkiezingen?\nNeem contact op met het",
+]
+
 
 def clean_text(text: str) -> str:
     """Verwijder overbodige witruimte en lege regels."""
@@ -29,6 +43,40 @@ def clean_text(text: str) -> str:
     lines = [line.strip() for line in text.split("\n")]
     text = "\n".join(lines)
     return text.strip()
+
+
+def strip_footer(text: str) -> str:
+    """Verwijder bekende boilerplate footers van het eind van een passage."""
+    for marker in FOOTER_MARKERS:
+        idx = text.find(marker)
+        if idx > 0:
+            text = text[:idx].strip()
+    return text
+
+
+def is_boilerplate(heading: str, text: str) -> bool:
+    """Controleer of een passage puur boilerplate is en verwijderd moet worden."""
+    # "Deel deze pagina" social media knoppen
+    if heading == "Deel deze pagina" or text.startswith("Deel deze pagina"):
+        return True
+
+    # Te kort om nuttig te zijn
+    if len(text) < 50:
+        return True
+
+    # PDF-artefact: overwegend alleen nummers (kandidatenlijst rijnummers)
+    lines = [l for l in text.split("\n") if l.strip()]
+    if len(lines) > 5:
+        digit_lines = sum(1 for l in lines if l.strip().isdigit())
+        if digit_lines / len(lines) > 0.7:
+            return True
+
+    # Pure footer (geen inhoud voor de footer)
+    for marker in FOOTER_MARKERS:
+        if text.startswith(marker) or text.startswith("Meer informatie\n" + marker.split("\n", 1)[-1] if "\n" in marker else marker):
+            return True
+
+    return False
 
 
 def parse_html(html_path: str) -> list[dict]:
@@ -148,19 +196,23 @@ def run():
                 passages.extend(pdf_passages)
                 pdf_count += 1
 
-        # Parse HTML als er geen PDF is, of als het een subpagina is
+        # Parse HTML: altijd als primaire bron bij (sub)pagina's,
+        # en als aanvullende toelichting bij PDF-documenten
         html_file = item.get("html_file")
         if html_file and Path(html_file).exists():
-            if item_type in ("subpagina", "hoofdpagina") or not passages:
-                html_passages = parse_html(html_file)
-                if html_passages:
+            html_passages = parse_html(html_file)
+            if html_passages:
+                if item_type in ("subpagina", "hoofdpagina"):
                     # Bij subpagina's: gebruik HTML als primaire bron
-                    if item_type in ("subpagina", "hoofdpagina"):
-                        passages = html_passages
-                    # Bij documenten: voeg HTML toe als er geen PDF was
-                    elif not passages:
-                        passages = html_passages
-                    html_count += 1
+                    passages = html_passages
+                elif not passages:
+                    # Bij documenten zonder PDF: gebruik HTML
+                    passages = html_passages
+                else:
+                    # Bij documenten met PDF: voeg HTML-toelichting toe
+                    # (bevat vaak context over wijzigingen, etc.)
+                    passages.extend(html_passages)
+                html_count += 1
 
         if not passages:
             skipped += 1
@@ -174,6 +226,32 @@ def run():
             passage["type"] = item_type
 
         all_passages.extend(passages)
+
+    # --- Opschoonfase ---
+    raw_count = len(all_passages)
+
+    # 1. Strip footers van alle passages
+    for passage in all_passages:
+        passage["text"] = strip_footer(passage["text"])
+
+    # 2. Verwijder boilerplate passages
+    all_passages = [
+        p for p in all_passages
+        if not is_boilerplate(p.get("heading", ""), p["text"])
+    ]
+    boilerplate_removed = raw_count - len(all_passages)
+
+    # 3. Dedupliceer op basis van tekst
+    seen_texts = set()
+    unique_passages = []
+    for p in all_passages:
+        # Normaliseer voor vergelijking (strip witruimte)
+        norm = re.sub(r"\s+", " ", p["text"]).strip()
+        if norm not in seen_texts:
+            seen_texts.add(norm)
+            unique_passages.append(p)
+    duplicates_removed = len(all_passages) - len(unique_passages)
+    all_passages = unique_passages
 
     # Geef elke passage een uniek ID
     for i, passage in enumerate(all_passages):
@@ -190,7 +268,10 @@ def run():
     print(f"HTML-bestanden verwerkt: {html_count}")
     print(f"PDF-bestanden verwerkt:  {pdf_count}")
     print(f"Overgeslagen:           {skipped}")
-    print(f"Totaal passages:        {len(all_passages)}")
+    print(f"Passages (ruw):         {raw_count}")
+    print(f"Boilerplate verwijderd: {boilerplate_removed}")
+    print(f"Duplicaten verwijderd:  {duplicates_removed}")
+    print(f"Passages (schoon):      {len(all_passages)}")
     print(f"Output:                 {OUTPUT_FILE}")
 
     # Steekproef

@@ -15,6 +15,9 @@ index/
 .DS_Store
 Thumbs.db
 
+# Secrets
+.env
+
 # IDE
 .vscode/
 .idea/

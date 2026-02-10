@@ -23,8 +23,8 @@ CHUNKS_FILE = INDEX_DIR / "chunks.pkl"
 MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 
 # Chunk instellingen
-MAX_CHUNK_CHARS = 1500  # ~375 tokens
-CHUNK_OVERLAP_CHARS = 200  # overlap tussen chunks
+MAX_CHUNK_CHARS = 1200  # ~300 tokens - kleiner voor preciezere retrieval
+CHUNK_OVERLAP_CHARS = 300  # meer overlap zodat details niet verloren gaan
 
 
 def split_into_chunks(text: str, max_chars: int = MAX_CHUNK_CHARS,
@@ -41,8 +41,16 @@ def split_into_chunks(text: str, max_chars: int = MAX_CHUNK_CHARS,
         # Als toevoegen van deze alinea de chunk te groot maakt
         if current_chunk and len(current_chunk) + len(para) + 1 > max_chars:
             chunks.append(current_chunk.strip())
-            # Begin nieuwe chunk met overlap vanuit de vorige
-            overlap_text = current_chunk[-overlap:] if len(current_chunk) > overlap else current_chunk
+            # Begin nieuwe chunk met overlap: pak hele alinea's vanuit het eind
+            # zodat we niet midden in een zin splitsen
+            overlap_parts = []
+            overlap_len = 0
+            for prev_para in reversed(current_chunk.split("\n")):
+                if overlap_len + len(prev_para) > overlap:
+                    break
+                overlap_parts.insert(0, prev_para)
+                overlap_len += len(prev_para) + 1
+            overlap_text = "\n".join(overlap_parts) if overlap_parts else current_chunk[-overlap:]
             current_chunk = overlap_text + "\n" + para
         else:
             current_chunk = current_chunk + "\n" + para if current_chunk else para
