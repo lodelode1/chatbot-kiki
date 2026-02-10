@@ -4,7 +4,12 @@ Design gebaseerd op de Kiesraad Toolkit Verkiezingen huisstijl.
 """
 
 import base64
+import sys
 import time
+from pathlib import Path
+
+# Zorg dat de repo-root in het Python-pad staat (nodig voor Streamlit Cloud)
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 import streamlit as st
 
