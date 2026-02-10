@@ -4,6 +4,7 @@ Design gebaseerd op de Kiesraad Toolkit Verkiezingen huisstijl.
 """
 
 import base64
+import os
 import sys
 import time
 from pathlib import Path
@@ -12,6 +13,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 import streamlit as st
+
+# Maak secrets beschikbaar als environment variables (voor Streamlit Cloud)
+try:
+    if "OPENROUTER_API_KEY" in st.secrets:
+        os.environ["OPENROUTER_API_KEY"] = st.secrets["OPENROUTER_API_KEY"]
+except FileNotFoundError:
+    pass
 
 from verkiezingen_bot.app.feedback import save_feedback
 from verkiezingen_bot.app.qa import QAEngine
