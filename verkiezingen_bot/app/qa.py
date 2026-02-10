@@ -33,16 +33,17 @@ RERANK_CANDIDATES = 25  # Breed ophalen voor re-ranking (lager = sneller op CPU)
 LLM_MODEL = "meta-llama/llama-3.3-70b-instruct"
 LLM_BASE_URL = "https://openrouter.ai/api/v1"
 
-# API key: probeer .env eerst, dan st.secrets (Streamlit Cloud)
-LLM_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
-if not LLM_API_KEY:
-    try:
-        import streamlit as st
-        LLM_API_KEY = st.secrets["OPENROUTER_API_KEY"]
-    except Exception:
-        pass
-if not LLM_API_KEY:
-    print("WAARSCHUWING: Geen OPENROUTER_API_KEY gevonden!")
+
+def _get_api_key():
+    """Haal API key op uit .env (lokaal) of st.secrets (Streamlit Cloud)."""
+    key = os.getenv("OPENROUTER_API_KEY", "")
+    if not key:
+        try:
+            import streamlit as st
+            key = st.secrets["OPENROUTER_API_KEY"]
+        except Exception:
+            pass
+    return key
 
 TOP_K = 10
 MAX_CONTEXT_CHARS = 10000
@@ -69,7 +70,7 @@ class QAEngine:
         self._reranker = None
         self._index = None
         self._chunks = None
-        self._llm = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
+        self._llm = OpenAI(base_url=LLM_BASE_URL, api_key=_get_api_key())
 
     def _load(self):
         """Lazy loading van model, re-ranker en index."""
