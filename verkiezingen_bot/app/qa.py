@@ -1,8 +1,7 @@
 """
 QA Backend: vraag-antwoord pipeline met bronvermelding.
 
-Vraag → hybride zoeken (FAISS + keyword) → stuur naar LLM (OpenRouter) → antwoord.
-Kan later eenvoudig omgeschakeld worden naar lokale Ollama.
+Vraag → hybride zoeken (FAISS + keyword) → re-rank → stuur naar LLM → antwoord.
 """
 
 import json
@@ -15,7 +14,7 @@ import faiss
 import numpy as np
 from dotenv import load_dotenv
 from openai import OpenAI
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import CrossEncoder, SentenceTransformer
 
 # Laad .env
 load_dotenv(Path(__file__).parent.parent / ".env")
@@ -25,16 +24,23 @@ FAISS_INDEX_FILE = INDEX_DIR / "faiss.index"
 CHUNKS_FILE = INDEX_DIR / "chunks.pkl"
 
 EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+RERANKER_MODEL = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 
-# LLM configuratie — schakel hier tussen online en lokaal
-# Online (OpenRouter):
-LLM_MODEL = "mistralai/ministral-8b-2512"
+# Retrieval instellingen
+RERANK_CANDIDATES = 25  # Breed ophalen voor re-ranking (lager = sneller op CPU)
+
+# LLM configuratie — OpenRouter met Llama 3.3 70B (Meta, open-source)
+LLM_MODEL = "meta-llama/llama-3.3-70b-instruct"
 LLM_BASE_URL = "https://openrouter.ai/api/v1"
+
+# API key: probeer .env eerst, dan st.secrets (Streamlit Cloud)
 LLM_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
-# Lokaal (Ollama) — uncomment deze regels als je een GPU hebt:
-# LLM_MODEL = "mistral"
-# LLM_BASE_URL = "http://localhost:11434/v1"
-# LLM_API_KEY = "ollama"
+if not LLM_API_KEY:
+    try:
+        import streamlit as st
+        LLM_API_KEY = st.secrets.get("OPENROUTER_API_KEY", "")
+    except Exception:
+        pass
 
 TOP_K = 10
 MAX_CONTEXT_CHARS = 10000
@@ -58,15 +64,20 @@ class QAEngine:
 
     def __init__(self):
         self._model = None
+        self._reranker = None
         self._index = None
         self._chunks = None
         self._llm = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
 
     def _load(self):
-        """Lazy loading van model en index."""
+        """Lazy loading van model, re-ranker en index."""
         if self._model is None:
             print("Laden embedding model...")
             self._model = SentenceTransformer(EMBEDDING_MODEL)
+
+        if self._reranker is None:
+            print("Laden re-ranker model...")
+            self._reranker = CrossEncoder(RERANKER_MODEL)
 
         if self._index is None:
             print("Laden FAISS index...")
@@ -131,49 +142,41 @@ class QAEngine:
         return scored[:top_k]
 
     def search(self, query: str, top_k: int = TOP_K) -> list[dict]:
-        """Hybride zoeken: combineer FAISS (semantisch) met keyword matching."""
+        """Hybride zoeken + re-ranking voor maximale precisie."""
         self._load()
 
-        # 1. Semantisch zoeken (breed, zonder MIN_SCORE filter)
+        # 1. Semantisch zoeken — breed net ophalen
         query_embedding = self._model.encode(
             [query], normalize_embeddings=True
         ).astype(np.float32)
-        distances, indices = self._index.search(query_embedding, top_k * 5)
+        distances, indices = self._index.search(
+            query_embedding, RERANK_CANDIDATES
+        )
 
-        semantic_results = {}
-        for dist, idx in zip(distances[0], indices[0]):
-            semantic_results[int(idx)] = float(dist)
+        candidate_indices = set()
+        for idx in indices[0]:
+            candidate_indices.add(int(idx))
 
-        # 2. Keyword zoeken
+        # 2. Keyword zoeken — vult gaten aan die semantisch mist
         keywords = self._extract_keywords(query)
-        keyword_results = self._keyword_search(keywords, top_k * 3)
-        keyword_scores = {r["_chunk_idx"]: r["score"] for r in keyword_results}
+        keyword_results = self._keyword_search(keywords, RERANK_CANDIDATES)
+        for r in keyword_results:
+            candidate_indices.add(r["_chunk_idx"])
 
-        # 3. Combineer: alle unieke chunk indices
-        all_indices = set(semantic_results.keys()) | set(keyword_scores.keys())
+        # 3. Re-rank alle kandidaten met cross-encoder
+        candidate_list = list(candidate_indices)
+        pairs = [
+            (query, self._chunks[idx]["text"]) for idx in candidate_list
+        ]
+        rerank_scores = self._reranker.predict(pairs)
 
+        # 4. Combineer en sorteer op re-rank score
         combined = []
-        for idx in all_indices:
-            sem_score = semantic_results.get(idx, 0.0)
-            kw_score = keyword_scores.get(idx, 0.0)
-
-            # Hybride score: semantisch dominant, keyword als tiebreaker
-            # Tenzij semantisch faalt en keyword sterk matcht
-            if kw_score >= 0.5 and sem_score < MIN_SCORE:
-                # Keyword-dominant: semantisch faalt, keyword neemt over
-                final_score = kw_score * 0.55 + sem_score * 0.45
-            else:
-                # Normaal: semantisch dominant met kleine keyword boost
-                final_score = sem_score * 0.85 + kw_score * 0.15
-
-            if final_score < MIN_SCORE * 0.5:
-                continue
-
+        for idx, score in zip(candidate_list, rerank_scores):
             chunk = self._chunks[idx].copy()
-            chunk["score"] = final_score
+            chunk["score"] = float(score)
             combined.append(chunk)
 
-        # Sorteer op gecombineerde score
         combined.sort(key=lambda x: x["score"], reverse=True)
         return combined[:top_k]
 

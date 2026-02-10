@@ -8,6 +8,7 @@ import time
 
 import streamlit as st
 
+from verkiezingen_bot.app.feedback import save_feedback
 from verkiezingen_bot.app.qa import QAEngine
 
 # Pagina-instellingen
@@ -236,6 +237,31 @@ st.markdown("""
         flex-shrink: 0;
     }
 
+    /* === FEEDBACK KNOPPEN === */
+    .feedback-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    .feedback-thanks {
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 0.4rem;
+    }
+
+    /* Info-balk */
+    .info-notice {
+        background-color: #f0f4f8;
+        border-left: 4px solid #002f5b;
+        padding: 0.7rem 1rem;
+        margin-top: 0.5rem;
+        border-radius: 0 6px 6px 0;
+        font-size: 0.82rem;
+        color: #444;
+        line-height: 1.5;
+    }
+
     /* === DENKANIMATIE === */
     .thinking-animation {
         display: flex;
@@ -441,9 +467,11 @@ def load_engine():
 with st.spinner("Chatbot wordt geladen..."):
     engine = load_engine()
 
-# Chat-geschiedenis
+# Chat-geschiedenis en feedback-status
 if "messages" not in st.session_state:
     st.session_state.messages = []
+if "feedback" not in st.session_state:
+    st.session_state.feedback = {}  # {msg_index: "positief" | "negatief"}
 
 # Welkomstblok als er nog geen berichten zijn
 if not st.session_state.messages:
@@ -451,9 +479,10 @@ if not st.session_state.messages:
     st.markdown(f"""
     <div class="welcome-card">
         <h3>{hex_icon("ballot", 32)} Welkom bij Kiki!</h3>
-        <p>Ik help je met vragen over de gemeenteraadsverkiezingen 2026,
-        op basis van de Toolkit Verkiezingen van de Kiesraad.</p>
-        <p>Stel gerust een vraag, bijvoorbeeld:</p>
+        <p>Ik ben Kiki, een chatbot die vragen beantwoordt over de
+        <strong>gemeenteraadsverkiezingen 2026</strong>. Mijn kennis is gebaseerd op
+        de Toolkit Verkiezingen van de Kiesraad.</p>
+        <p>Stel hieronder een vraag, bijvoorbeeld:</p>
         <div class="example-questions">
             <div class="example-q">
                 <span class="eq-icon">{pencil_mini}</span>
@@ -469,10 +498,22 @@ if not st.session_state.messages:
             </div>
         </div>
     </div>
+    <div class="info-notice">
+        <strong>Goed om te weten:</strong> Kiki heeft geen geheugen. Elke vraag wordt
+        volledig los beantwoord, zonder kennis van eerdere vragen. Je kunt dus niet
+        doorvragen — stel elke keer een complete, nieuwe vraag. Als de chatbot net
+        is opgestart kan de eerste vraag wat langer duren (~30 sec.). Daarna gaat
+        het sneller.
+        <br><br>
+        <strong>Disclaimer:</strong> Kiki is een AI-assistent en kan fouten maken.
+        Controleer belangrijke informatie altijd in de officiële Toolkit Verkiezingen
+        op <a href="https://www.kiesraad.nl" target="_blank">kiesraad.nl</a>.
+        Klopt een antwoord niet? Gebruik de feedback-knoppen zodat we Kiki kunnen verbeteren.
+    </div>
     """, unsafe_allow_html=True)
 
 # Toon eerdere berichten
-for message in st.session_state.messages:
+for idx, message in enumerate(st.session_state.messages):
     avatar = ASSISTANT_AVATAR if message["role"] == "assistant" else USER_AVATAR
     with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
@@ -481,14 +522,60 @@ for message in st.session_state.messages:
         if message.get("response_time"):
             render_response_time(message["response_time"])
 
+        # Feedback-knoppen bij assistant-berichten
+        if message["role"] == "assistant":
+            fb_key = str(idx)
+            if fb_key in st.session_state.feedback:
+                # Feedback al gegeven — toon bevestiging
+                rating = st.session_state.feedback[fb_key]
+                icon = "\U0001f44d" if rating == "positief" else "\U0001f44e"
+                st.markdown(
+                    f'<div class="feedback-thanks">{icon} Bedankt voor je feedback!</div>',
+                    unsafe_allow_html=True,
+                )
+            elif st.session_state.get(f"show_comment_{idx}"):
+                # Negatief geklikt, wacht op toelichting
+                comment = st.text_input(
+                    "Wat klopt er niet? (optioneel)",
+                    key=f"comment_{idx}",
+                    placeholder="Bijv. het antwoord gaat over het verkeerde model...",
+                )
+                if st.button("Verstuur feedback", key=f"send_{idx}"):
+                    question = ""
+                    for prev in range(idx - 1, -1, -1):
+                        if st.session_state.messages[prev]["role"] == "user":
+                            question = st.session_state.messages[prev]["content"]
+                            break
+                    save_feedback(question, message["content"], "negatief", comment)
+                    st.session_state.feedback[fb_key] = "negatief"
+                    del st.session_state[f"show_comment_{idx}"]
+                    st.rerun()
+            else:
+                # Toon duim knoppen
+                cols = st.columns([1, 1, 6])
+                with cols[0]:
+                    if st.button("\U0001f44d", key=f"pos_{idx}", help="Correct antwoord"):
+                        st.session_state.feedback[fb_key] = "positief"
+                        question = ""
+                        for prev in range(idx - 1, -1, -1):
+                            if st.session_state.messages[prev]["role"] == "user":
+                                question = st.session_state.messages[prev]["content"]
+                                break
+                        save_feedback(question, message["content"], "positief")
+                        st.rerun()
+                with cols[1]:
+                    if st.button("\U0001f44e", key=f"neg_{idx}", help="Niet correct"):
+                        st.session_state[f"show_comment_{idx}"] = True
+                        st.rerun()
+
 # Chat invoer
-if prompt := st.chat_input("Stel je vraag over de verkiezingen..."):
-    # Toon gebruikersvraag
+if prompt := st.chat_input("Stel een nieuwe vraag over de verkiezingen..."):
+    # Sla vraag op en toon in chat
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar=USER_AVATAR):
         st.markdown(prompt)
 
-    # Genereer antwoord met denkanimatie, daarna geanimeerd stemvakje als avatar
+    # Toon denkanimatie terwijl antwoord wordt gegenereerd
     with st.chat_message("assistant", avatar=ASSISTANT_AVATAR):
         thinking_placeholder = st.empty()
         thinking_placeholder.markdown(THINKING_HTML, unsafe_allow_html=True)
@@ -498,9 +585,6 @@ if prompt := st.chat_input("Stel je vraag over de verkiezingen..."):
         elapsed = time.time() - start_time
 
         thinking_placeholder.empty()
-        st.markdown(result["answer"])
-        render_sources(result["sources"])
-        render_response_time(elapsed)
 
     # Sla antwoord op in geschiedenis
     st.session_state.messages.append({
@@ -509,3 +593,6 @@ if prompt := st.chat_input("Stel je vraag over de verkiezingen..."):
         "sources": result["sources"],
         "response_time": elapsed,
     })
+
+    # Herlaad pagina zodat alles netjes via de berichtenloop wordt getoond
+    st.rerun()

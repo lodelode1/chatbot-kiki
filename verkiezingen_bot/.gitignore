@@ -9,7 +9,7 @@ __pycache__/
 
 # Data (te groot voor git)
 data/raw/
-index/
+data/feedback.csv
 
 # OS
 .DS_Store

@@ -11,11 +11,16 @@ sentence-transformers
 # Vector store
 faiss-cpu
 
-# LLM (lokaal via Ollama)
-ollama
+# LLM
+openai
+python-dotenv
 
 # UI
 streamlit
+
+# Feedback (Google Sheets)
+gspread
+google-auth
 
 # Utilities
 tqdm
