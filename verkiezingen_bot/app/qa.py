@@ -233,16 +233,18 @@ class QAEngine:
             f"Verwijs naar documentnaam en sectie, niet naar 'passage' nummers."
         )
 
-        response = self._llm.chat.completions.create(
-            model=LLM_MODEL,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt},
-            ],
-            temperature=0.3,
-        )
-
-        answer = response.choices[0].message.content
+        try:
+            response = self._llm.chat.completions.create(
+                model=LLM_MODEL,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_prompt},
+                ],
+                temperature=0.3,
+            )
+            answer = response.choices[0].message.content
+        except Exception as e:
+            answer = f"Er ging iets mis bij het genereren van het antwoord: {e}"
 
         return {
             "answer": answer,
