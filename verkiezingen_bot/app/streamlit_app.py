@@ -108,7 +108,7 @@ st.markdown("""
     /* Header balk */
     .kiki-header {
         background-color: #002f5b;
-        padding: 1.8rem 2rem 1.5rem 2rem;
+        padding: 1.2rem 2rem 1rem 2rem;
         margin: -6rem -4rem 1.5rem -4rem;
         text-align: center;
         position: relative;
@@ -125,14 +125,18 @@ st.markdown("""
     }
     .kiki-header h1 {
         font-weight: 700;
-        font-size: 2rem;
+        font-size: 1.6rem;
         margin: 0;
         color: #ffffff;
         letter-spacing: -0.02em;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.4rem;
+        gap: 0.3rem;
+    }
+    .kiki-header h1 .hex-icon {
+        margin: 0;
+        flex-shrink: 0;
     }
     .kiki-header .kiki-name {
         display: inline-flex;
@@ -145,18 +149,18 @@ st.markdown("""
     .kiki-header .red-i::before {
         content: '';
         position: absolute;
-        width: 7px;
-        height: 7px;
+        width: 6px;
+        height: 6px;
         background: #e3032d;
         border-radius: 50%;
-        top: 0.08em;
+        top: 0.05em;
         left: 50%;
         transform: translateX(-50%);
     }
     .kiki-header .subtitle {
         color: #f8ccb8;
-        font-size: 0.95rem;
-        margin: 0.4rem 0 0 0;
+        font-size: 0.85rem;
+        margin: 0.3rem 0 0 0;
         font-weight: 400;
     }
 
@@ -323,7 +327,7 @@ def hex_icon(icon_type="pencil", size=44):
         # Nederlands rood potlood in zeshoekig kader (blauwe achtergrond)
         return (
             f'<svg class="hex-icon" width="{size}" height="{size}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'
-            '<polygon points="50,3 93,28 93,72 50,97 7,72 7,28" fill="#002f5b" stroke="#002f5b" stroke-width="2"/>'
+            '<polygon points="50,3 93,28 93,72 50,97 7,72 7,28" fill="none" stroke="none"/>'
             '<g transform="translate(50,48) rotate(-45)">'
             # Potloodlichaam — dik en rood, zoals het Nederlandse stempotlood
             '<rect x="-6" y="-26" width="12" height="36" rx="1" fill="#cc0000"/>'
@@ -457,10 +461,9 @@ THINKING_HTML = (
 )
 
 # Header
-KIKI_TITLE = 'K<span class="red-i">i</span>k<span class="red-i">i</span>'
 st.markdown(f"""
 <div class="kiki-header">
-    <h1>{hex_icon("pencil", 40)} <span class="kiki-name">{KIKI_TITLE}</span></h1>
+    <h1>{hex_icon("pencil", 32)} Kiki</h1>
     <div class="subtitle">Jouw assistent voor de gemeenteraadsverkiezingen 2026</div>
 </div>
 """, unsafe_allow_html=True)
