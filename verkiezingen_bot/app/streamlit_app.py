@@ -129,6 +129,29 @@ st.markdown("""
         margin: 0;
         color: #ffffff;
         letter-spacing: -0.02em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+    .kiki-header .kiki-name {
+        display: inline-flex;
+        letter-spacing: 0.01em;
+    }
+    .kiki-header .red-i {
+        position: relative;
+        display: inline-block;
+    }
+    .kiki-header .red-i::before {
+        content: '';
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        background: #e3032d;
+        border-radius: 50%;
+        top: 0.08em;
+        left: 50%;
+        transform: translateX(-50%);
     }
     .kiki-header .subtitle {
         color: #f8ccb8;
@@ -434,9 +457,10 @@ THINKING_HTML = (
 )
 
 # Header
+KIKI_TITLE = 'K<span class="red-i">i</span>k<span class="red-i">i</span>'
 st.markdown(f"""
 <div class="kiki-header">
-    <h1>{hex_icon("pencil", 44)} Kiki</h1>
+    <h1>{hex_icon("pencil", 40)} <span class="kiki-name">{KIKI_TITLE}</span></h1>
     <div class="subtitle">Jouw assistent voor de gemeenteraadsverkiezingen 2026</div>
 </div>
 """, unsafe_allow_html=True)
