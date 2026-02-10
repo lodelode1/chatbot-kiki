@@ -9,6 +9,7 @@ __pycache__/
 
 # Data (te groot voor git)
 data/raw/
+data/metadata.json
 data/feedback.csv
 
 # OS
