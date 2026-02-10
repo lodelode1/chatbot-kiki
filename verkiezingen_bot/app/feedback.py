@@ -1,85 +1,62 @@
 """
-Feedback opslag: Google Sheets (primair) met lokale CSV fallback.
+Feedback opslag: Supabase (primair) met lokale CSV fallback.
 """
 
 import csv
-import json
 import os
 from datetime import datetime
 from pathlib import Path
 
+import requests
 import streamlit as st
 
 # Pad voor lokale fallback CSV
 FEEDBACK_CSV = Path(__file__).parent.parent / "data" / "feedback.csv"
 
 
-def _get_gspread_client():
-    """Maak een gspread client aan via st.secrets of .env."""
-    try:
-        import gspread
-        from google.oauth2.service_account import Credentials
-    except ImportError:
-        return None
-
-    scopes = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive",
-    ]
-
-    # Probeer credentials uit st.secrets (Streamlit Cloud)
-    try:
-        creds_dict = dict(st.secrets["gcp_service_account"])
-        creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
-        return gspread.authorize(creds)
-    except (KeyError, FileNotFoundError):
-        pass
-
-    # Probeer credentials uit environment variable (lokaal)
-    creds_json = os.getenv("GOOGLE_SHEETS_CREDENTIALS")
-    if creds_json:
-        creds_dict = json.loads(creds_json)
-        creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
-        return gspread.authorize(creds)
-
-    return None
+def _get_supabase_config():
+    """Haal Supabase URL en key op uit st.secrets of environment."""
+    url = os.getenv("SUPABASE_URL", "")
+    key = os.getenv("SUPABASE_KEY", "")
+    if not url:
+        try:
+            url = st.secrets["SUPABASE_URL"]
+        except Exception:
+            pass
+    if not key:
+        try:
+            key = st.secrets["SUPABASE_KEY"]
+        except Exception:
+            pass
+    return url, key
 
 
-def _save_to_sheets(question: str, answer: str, rating: str, comment: str) -> bool:
-    """Sla feedback op in Google Sheets. Retourneert True bij succes."""
-    client = _get_gspread_client()
-    if client is None:
+def _save_to_supabase(question: str, answer: str, rating: str, comment: str) -> bool:
+    """Sla feedback op in Supabase. Retourneert True bij succes."""
+    url, key = _get_supabase_config()
+    if not url or not key:
         return False
 
     try:
-        # Sheet-naam uit secrets of default
-        try:
-            sheet_name = st.secrets["feedback_sheet_name"]
-        except (KeyError, FileNotFoundError):
-            sheet_name = os.getenv("FEEDBACK_SHEET_NAME", "Kiki Feedback")
-
-        spreadsheet = client.open(sheet_name)
-        worksheet = spreadsheet.sheet1
-
-        # Maak headers aan als het sheet leeg is
-        if worksheet.row_count == 0 or not worksheet.cell(1, 1).value:
-            worksheet.append_row(
-                ["Tijdstip", "Vraag", "Antwoord", "Beoordeling", "Toelichting"]
-            )
-
-        # Voeg feedback toe
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        worksheet.append_row([
-            timestamp,
-            question,
-            answer[:500],
-            rating,
-            comment,
-        ])
-        return True
-
+        response = requests.post(
+            f"{url}/rest/v1/feedback",
+            headers={
+                "apikey": key,
+                "Authorization": f"Bearer {key}",
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal",
+            },
+            json={
+                "vraag": question,
+                "antwoord": answer[:500],
+                "beoordeling": rating,
+                "toelichting": comment,
+            },
+            timeout=5,
+        )
+        return response.status_code == 201
     except Exception as e:
-        print(f"Google Sheets fout: {e}")
+        print(f"Supabase fout: {e}")
         return False
 
 
@@ -100,7 +77,7 @@ def _save_to_csv(question: str, answer: str, rating: str, comment: str):
 
 def save_feedback(question: str, answer: str, rating: str, comment: str = ""):
     """
-    Sla feedback op. Probeert eerst Google Sheets, anders lokale CSV.
+    Sla feedback op. Probeert eerst Supabase, anders lokale CSV.
 
     Args:
         question: De gestelde vraag
@@ -108,6 +85,6 @@ def save_feedback(question: str, answer: str, rating: str, comment: str = ""):
         rating: "positief" of "negatief"
         comment: Optionele toelichting van de gebruiker
     """
-    success = _save_to_sheets(question, answer, rating, comment)
+    success = _save_to_supabase(question, answer, rating, comment)
     if not success:
         _save_to_csv(question, answer, rating, comment)

@@ -18,9 +18,5 @@ python-dotenv
 # UI
 streamlit
 
-# Feedback (Google Sheets)
-gspread
-google-auth
-
 # Utilities
 tqdm
