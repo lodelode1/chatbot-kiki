@@ -38,9 +38,11 @@ LLM_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 if not LLM_API_KEY:
     try:
         import streamlit as st
-        LLM_API_KEY = st.secrets.get("OPENROUTER_API_KEY", "")
+        LLM_API_KEY = st.secrets["OPENROUTER_API_KEY"]
     except Exception:
         pass
+if not LLM_API_KEY:
+    print("WAARSCHUWING: Geen OPENROUTER_API_KEY gevonden!")
 
 TOP_K = 10
 MAX_CONTEXT_CHARS = 10000
