@@ -53,13 +53,11 @@ SYSTEM_PROMPT = """Je bent Kiki, een vriendelijke en deskundige assistent over d
 
 REGELS:
 1. Baseer je antwoord UITSLUITEND op de aangeleverde bronpassages. Verzin geen informatie die niet in de bronnen staat.
-2. Geef een BEKNOPT en direct antwoord. Kom meteen ter zake. Begin niet met "Op basis van de bronnen..." of vergelijkbare inleidingen.
-3. Gebruik opsommingen alleen als de vraag om meerdere punten vraagt.
+2. Geef een helder en bondig antwoord van 2 tot 5 zinnen. Kom meteen ter zake — geen inleidingen. Alleen bij complexe procedures mag je iets langer uitweiden.
+3. Gebruik opsommingen als dat de leesbaarheid verbetert.
 4. Als het antwoord niet in de bronnen te vinden is, zeg dan: "Dat kan ik niet vinden in de Toolkit Verkiezingen."
 5. Antwoord altijd in het Nederlands.
-6. Verwijs naar documenten bij naam, bijvoorbeeld: (zie Instructie Stembureauleden, sectie 'Stemmen bij volmacht'). Verwijs NOOIT naar "passage 1" of "bron 2".
-7. Als de bronnen specifieke getallen, modelnummers of datums bevatten, neem deze letterlijk over — parafraseer geen cijfers.
-8. Zet aan het eind een korte bronvermelding: [Bron: documentnaam - sectie]"""
+6. Als de bronnen specifieke getallen, modelnummers of datums bevatten, neem deze letterlijk over — parafraseer geen cijfers."""
 
 
 class QAEngine:
@@ -184,14 +182,11 @@ class QAEngine:
         return combined[:top_k]
 
     def build_context(self, chunks: list[dict]) -> str:
-        """Bouw de context-tekst op uit gevonden chunks, beperkt tot MAX_CONTEXT_CHARS."""
+        """Bouw de context-tekst op uit genummerde chunks, beperkt tot MAX_CONTEXT_CHARS."""
         context_parts = []
         total_chars = 0
         for i, chunk in enumerate(chunks, 1):
-            part = (
-                f"--- Document: {chunk['titel']} | Sectie: {chunk['sectie']} ---\n"
-                f"{chunk['text']}\n"
-            )
+            part = f"[{i}]\n{chunk['text']}\n"
             if total_chars + len(part) > MAX_CONTEXT_CHARS:
                 remaining = MAX_CONTEXT_CHARS - total_chars
                 if remaining > 100:
@@ -201,11 +196,14 @@ class QAEngine:
             total_chars += len(part)
         return "\n".join(context_parts)
 
-    def _get_sources(self, chunks: list[dict]) -> list[dict]:
-        """Verzamel unieke bronnen uit chunks."""
+    def _get_sources_by_indices(self, chunks: list[dict], indices: list[int]) -> list[dict]:
+        """Verzamel bronnen op basis van passage-nummers die de LLM heeft aangegeven."""
         seen = set()
         sources = []
-        for chunk in chunks:
+        for idx in indices:
+            if idx < 0 or idx >= len(chunks):
+                continue
+            chunk = chunks[idx]
             key = chunk["bron_url"]
             if key and key not in seen:
                 seen.add(key)
@@ -215,6 +213,17 @@ class QAEngine:
                     "sectie": chunk["sectie"],
                 })
         return sources
+
+    def _parse_used_passages(self, answer: str) -> tuple[str, list[int]]:
+        """Haal passage-nummers uit het LLM-antwoord en strip die regel."""
+        # Zoek patroon zoals "GEBRUIKTE PASSAGES: 1, 3, 5" of "GEBRUIKTE PASSAGES: [1, 3]"
+        match = re.search(r"GEBRUIKTE PASSAGES:\s*\[?([\d,\s]+)\]?", answer, re.IGNORECASE)
+        if match:
+            nums = re.findall(r"\d+", match.group(1))
+            indices = [int(n) - 1 for n in nums]  # 1-indexed → 0-indexed
+            clean = answer[:match.start()].strip()
+            return clean, indices
+        return answer.strip(), []
 
     def ask(self, question: str) -> dict:
         """
@@ -227,11 +236,11 @@ class QAEngine:
         context = self.build_context(chunks)
 
         user_prompt = (
-            f"Hieronder staan passages uit de Toolkit Verkiezingen van de Kiesraad.\n\n"
+            f"Hieronder staan genummerde passages uit de Toolkit Verkiezingen.\n\n"
             f"BRONPASSAGES:\n\n{context}\n\n"
             f"VRAAG VAN DE GEBRUIKER: {question}\n\n"
-            f"Geef een beknopt antwoord op basis van de bovenstaande bronnen. "
-            f"Verwijs naar documentnaam en sectie, niet naar 'passage' nummers."
+            f"Geef een helder en bondig antwoord op basis van de bovenstaande bronnen.\n"
+            f"Sluit af met exact deze regel: GEBRUIKTE PASSAGES: [nummers]"
         )
 
         try:
@@ -244,51 +253,68 @@ class QAEngine:
                 temperature=0.3,
             )
             answer = response.choices[0].message.content
+            answer, used_indices = self._parse_used_passages(answer)
         except Exception as e:
             answer = f"Er ging iets mis bij het genereren van het antwoord: {e}"
+            used_indices = []
+
+        # Bronnen op basis van wat de LLM daadwerkelijk gebruikte
+        if used_indices:
+            sources = self._get_sources_by_indices(chunks, used_indices)
+        else:
+            # Fallback: top-1 bron als de LLM geen passages aangaf
+            sources = self._get_sources_by_indices(chunks, [0])
 
         return {
             "answer": answer,
-            "sources": self._get_sources(chunks),
+            "sources": sources,
             "chunks": chunks,
         }
 
-    def ask_stream(self, question: str):
+    def ask_detailed(self, question: str, short_answer: str) -> dict:
         """
-        Beantwoord een vraag met streaming output.
+        Geef een uitgebreider antwoord op dezelfde vraag.
 
-        Yields:
-            str tokens van het antwoord
+        Hergebruikt dezelfde zoekresultaten maar vraagt de LLM om meer detail.
         """
         chunks = self.search(question)
         context = self.build_context(chunks)
 
         user_prompt = (
-            f"Hieronder staan passages uit de Toolkit Verkiezingen van de Kiesraad.\n\n"
+            f"Hieronder staan genummerde passages uit de Toolkit Verkiezingen.\n\n"
             f"BRONPASSAGES:\n\n{context}\n\n"
             f"VRAAG VAN DE GEBRUIKER: {question}\n\n"
-            f"Geef een beknopt antwoord op basis van de bovenstaande bronnen. "
-            f"Verwijs naar documentnaam en sectie, niet naar 'passage' nummers."
+            f"Je gaf eerder dit korte antwoord: \"{short_answer}\"\n\n"
+            f"Geef nu een uitgebreider en volledig antwoord. Leg de procedure stap voor stap uit "
+            f"en behandel relevante details, uitzonderingen en aandachtspunten.\n"
+            f"Sluit af met exact deze regel: GEBRUIKTE PASSAGES: [nummers]"
         )
 
-        stream = self._llm.chat.completions.create(
-            model=LLM_MODEL,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt},
-            ],
-            stream=True,
-            temperature=0.3,
-        )
+        try:
+            response = self._llm.chat.completions.create(
+                model=LLM_MODEL,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_prompt},
+                ],
+                temperature=0.3,
+            )
+            answer = response.choices[0].message.content
+            answer, used_indices = self._parse_used_passages(answer)
+        except Exception as e:
+            answer = f"Er ging iets mis bij het genereren van het antwoord: {e}"
+            used_indices = []
 
-        for chunk_response in stream:
-            if chunk_response.choices[0].delta.content:
-                yield chunk_response.choices[0].delta.content
+        if used_indices:
+            sources = self._get_sources_by_indices(chunks, used_indices)
+        else:
+            sources = self._get_sources_by_indices(chunks, [0])
 
-        # Yield bronnen als laatste
-        yield "\n\n__SOURCES__" + json.dumps(
-            self._get_sources(chunks), ensure_ascii=False
-        )
+        return {
+            "answer": answer,
+            "sources": sources,
+            "chunks": chunks,
+        }
 
 
 # Voor gebruik vanuit command line

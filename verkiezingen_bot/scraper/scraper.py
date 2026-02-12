@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 BASE_URL = "https://www.kiesraad.nl/verkiezingen/gemeenteraden/documenten-gemeenteraadsverkiezing-2026"
-ALLOWED_DOMAINS = ["www.kiesraad.nl", "www.rijksoverheid.nl"]
+ALLOWED_DOMAINS = ["www.kiesraad.nl", "www.rijksoverheid.nl", "kiesraad.email-provider.eu"]
 DATA_DIR = Path(__file__).parent.parent / "data"
 RAW_HTML_DIR = DATA_DIR / "raw" / "html"
 RAW_PDF_DIR = DATA_DIR / "raw" / "pdf"

@@ -108,8 +108,8 @@ st.markdown("""
     /* Header balk */
     .kiki-header {
         background-color: #002f5b;
-        padding: 1.2rem 2rem 1rem 2rem;
         margin: -6rem -4rem 1.5rem -4rem;
+        padding: 1.8rem 2rem 1.5rem 2rem;
         text-align: center;
         position: relative;
         overflow: hidden;
@@ -122,46 +122,6 @@ st.markdown("""
         right: 0;
         height: 4px;
         background: linear-gradient(90deg, #e3032d 0%, #ee8050 50%, #f8ccb8 100%);
-    }
-    .kiki-header h1 {
-        font-weight: 700;
-        font-size: 1.6rem;
-        margin: 0;
-        color: #ffffff;
-        letter-spacing: -0.02em;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.3rem;
-    }
-    .kiki-header h1 .hex-icon {
-        margin: 0;
-        flex-shrink: 0;
-    }
-    .kiki-header .kiki-name {
-        display: inline-flex;
-        letter-spacing: 0.01em;
-    }
-    .kiki-header .red-i {
-        position: relative;
-        display: inline-block;
-    }
-    .kiki-header .red-i::before {
-        content: '';
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        background: #e3032d;
-        border-radius: 50%;
-        top: 0.05em;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    .kiki-header .subtitle {
-        color: #f8ccb8;
-        font-size: 0.85rem;
-        margin: 0.3rem 0 0 0;
-        font-weight: 400;
     }
 
     /* Hexagonale icoon-container */
@@ -257,24 +217,28 @@ st.markdown("""
         margin-bottom: 0.8rem;
         line-height: 1.5;
     }
-    .example-questions {
+    .welcome-notice {
         display: flex;
-        flex-direction: column;
-        gap: 0.4rem;
-    }
-    .example-q {
+        align-items: flex-start;
+        gap: 0.6rem;
         background: white;
-        border-left: 3px solid #e3032d;
-        border-radius: 0 6px 6px 0;
-        padding: 0.6rem 0.9rem;
-        font-size: 0.9rem;
-        color: #002f5b;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        border-radius: 8px;
+        padding: 0.7rem 0.9rem;
+        margin-top: 0.6rem;
+        font-size: 0.84rem;
+        color: #444;
+        line-height: 1.5;
     }
-    .example-q .eq-icon {
+    .welcome-notice .wn-icon {
         flex-shrink: 0;
+        margin-top: 1px;
+    }
+    .welcome-notice a {
+        color: #002f5b;
+        font-weight: 500;
+    }
+    .welcome-notice a:hover {
+        color: #e3032d;
     }
 
     /* === FEEDBACK KNOPPEN === */
@@ -288,18 +252,6 @@ st.markdown("""
         font-size: 0.8rem;
         color: #666;
         margin-top: 0.4rem;
-    }
-
-    /* Info-balk */
-    .info-notice {
-        background-color: #f0f4f8;
-        border-left: 4px solid #002f5b;
-        padding: 0.7rem 1rem;
-        margin-top: 0.5rem;
-        border-radius: 0 6px 6px 0;
-        font-size: 0.82rem;
-        color: #444;
-        line-height: 1.5;
     }
 
     /* === DENKANIMATIE === */
@@ -317,6 +269,101 @@ st.markdown("""
         display: inline-flex;
         gap: 8px;
     }
+
+    /* === HEADER STEMBILJET === */
+    .header-ballot {
+        display: inline-flex;
+        background: #f9f6f0;
+        border: 2px solid #c0b8a8;
+        border-radius: 3px;
+        box-shadow: 3px 4px 14px rgba(0,0,0,0.22);
+        overflow: hidden;
+    }
+    .hb-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #002f5b;
+        text-align: center;
+        letter-spacing: 0.14em;
+        padding: 12px 24px 8px 24px;
+        border-bottom: 2px solid #002f5b;
+    }
+    .hb-body {
+        display: flex;
+    }
+    /* Elke kolom is een vouwpaneel */
+    .hb-col {
+        padding: 10px 20px 14px 20px;
+        min-width: 80px;
+    }
+    .hb-col:not(:last-child) {
+        border-right: 1px solid #d0c8b8;
+    }
+    /* Kolom 1: vouwt open vanuit links */
+    .hb-col-1 {
+        transform-origin: left center;
+        transform: perspective(600px) rotateY(-90deg);
+        animation: unfoldCol 0.6s ease-out 0.3s forwards;
+    }
+    /* Kolom 2: vouwt open vanuit links */
+    .hb-col-2 {
+        transform-origin: left center;
+        transform: perspective(600px) rotateY(-90deg);
+        animation: unfoldCol 0.6s ease-out 1.1s forwards;
+    }
+    /* Kolom 3: vouwt open vanuit links */
+    .hb-col-3 {
+        transform-origin: left center;
+        transform: perspective(600px) rotateY(-90deg);
+        animation: unfoldCol 0.6s ease-out 1.9s forwards;
+    }
+    @keyframes unfoldCol {
+        0%   { transform: perspective(600px) rotateY(-90deg); }
+        100% { transform: perspective(600px) rotateY(0deg); }
+    }
+    .hb-party {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #002f5b;
+        margin-bottom: 7px;
+    }
+    .hb-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 5px;
+    }
+    .hb-c {
+        width: 14px; height: 14px;
+        border-radius: 50%;
+        border: 1.5px solid #555;
+        background: white;
+        flex-shrink: 0;
+        position: relative;
+    }
+    .hb-c.voted::after {
+        content: '';
+        position: absolute;
+        top: 2px; left: 2px;
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: #e3032d;
+        transform: scale(0);
+        animation: hbVote 0.3s ease-out 2.8s forwards;
+    }
+    @keyframes hbVote {
+        from { transform: scale(0); }
+        to { transform: scale(1); }
+    }
+    .hb-line {
+        height: 2px;
+        width: 42px;
+        background: #c0b8a8;
+        border-radius: 1px;
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -460,11 +507,31 @@ THINKING_HTML = (
     '</div>'
 )
 
-# Header
-st.markdown(f"""
+# Header met stembiljet
+st.markdown("""
 <div class="kiki-header">
-    <h1>{hex_icon("pencil", 32)} Kiki</h1>
-    <div class="subtitle">Jouw assistent voor de gemeenteraadsverkiezingen 2026</div>
+    <div class="header-ballot">
+        <div class="hb-title">CHATBOT KIKI</div>
+        <div class="hb-body">
+            <div class="hb-col hb-col-1">
+                <div class="hb-party">Correct</div>
+                <div class="hb-row"><span class="hb-c voted"></span><span class="hb-line"></span></div>
+                <div class="hb-row"><span class="hb-c"></span><span class="hb-line"></span></div>
+                <div class="hb-row"><span class="hb-c"></span><span class="hb-line"></span></div>
+            </div>
+            <div class="hb-col hb-col-2">
+                <div class="hb-party">Fout</div>
+                <div class="hb-row"><span class="hb-c"></span><span class="hb-line"></span></div>
+                <div class="hb-row"><span class="hb-c"></span><span class="hb-line"></span></div>
+            </div>
+            <div class="hb-col hb-col-3">
+                <div class="hb-party">Verzonnen</div>
+                <div class="hb-row"><span class="hb-c"></span><span class="hb-line"></span></div>
+                <div class="hb-row"><span class="hb-c"></span><span class="hb-line"></span></div>
+                <div class="hb-row"><span class="hb-c"></span><span class="hb-line"></span></div>
+            </div>
+        </div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -498,7 +565,7 @@ def render_response_time(seconds: float):
 
 
 @st.cache_resource
-def load_engine():
+def load_engine(_version=2):
     """Laad de QA engine (cached zodat het maar 1x gebeurt)."""
     return QAEngine()
 
@@ -516,39 +583,27 @@ if "feedback" not in st.session_state:
 # Welkomstblok als er nog geen berichten zijn
 if not st.session_state.messages:
     pencil_mini = hex_icon("search")
+
+    notice_icon = hex_icon("search")
+    doc_icon = hex_icon("source")
     st.markdown(f"""
     <div class="welcome-card">
         <h3>{hex_icon("ballot", 32)} Welkom bij Kiki!</h3>
         <p>Ik ben Kiki, een chatbot die vragen beantwoordt over de
         <strong>gemeenteraadsverkiezingen 2026</strong>. Mijn kennis is gebaseerd op
-        de Toolkit Verkiezingen van de Kiesraad.</p>
-        <p>Stel hieronder een vraag, bijvoorbeeld:</p>
-        <div class="example-questions">
-            <div class="example-q">
-                <span class="eq-icon">{pencil_mini}</span>
-                Hoe werkt stemmen bij volmacht?
-            </div>
-            <div class="example-q">
-                <span class="eq-icon">{pencil_mini}</span>
-                Wat is de rol van het stembureau?
-            </div>
-            <div class="example-q">
-                <span class="eq-icon">{pencil_mini}</span>
-                Welke modellen gebruik ik op de dag van de stemming?
-            </div>
+        de Toolkit Verkiezingen van de Kiesraad. Stel hieronder een vraag!</p>
+        <div class="welcome-notice">
+            <span class="wn-icon">{notice_icon}</span>
+            <span><strong>Goed om te weten:</strong> Kiki heeft geen geheugen — elke vraag
+            wordt los beantwoord. Stel dus elke keer een complete vraag.
+            De eerste vraag kan even duren (~30 sec.).</span>
         </div>
-    </div>
-    <div class="info-notice">
-        <strong>Goed om te weten:</strong> Kiki heeft geen geheugen. Elke vraag wordt
-        volledig los beantwoord, zonder kennis van eerdere vragen. Je kunt dus niet
-        doorvragen — stel elke keer een complete, nieuwe vraag. Als de chatbot net
-        is opgestart kan de eerste vraag wat langer duren (~30 sec.). Daarna gaat
-        het sneller.
-        <br><br>
-        <strong>Disclaimer:</strong> Kiki is een AI-assistent en kan fouten maken.
-        Controleer belangrijke informatie altijd in de officiële Toolkit Verkiezingen
-        op <a href="https://www.kiesraad.nl" target="_blank">kiesraad.nl</a>.
-        Klopt een antwoord niet? Gebruik de feedback-knoppen zodat we Kiki kunnen verbeteren.
+        <div class="welcome-notice">
+            <span class="wn-icon">{doc_icon}</span>
+            <span><strong>Disclaimer:</strong> Kiki is een AI-assistent en kan fouten maken.
+            Controleer belangrijke informatie altijd op
+            <a href="https://www.kiesraad.nl" target="_blank">kiesraad.nl</a>.</span>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -591,8 +646,12 @@ for idx, message in enumerate(st.session_state.messages):
                     del st.session_state[f"show_comment_{idx}"]
                     st.rerun()
             else:
-                # Toon duim knoppen
-                cols = st.columns([1, 1, 6])
+                # Toon duim knoppen + "Meer hierover" knop
+                is_last_assistant = idx == len(st.session_state.messages) - 1
+                if is_last_assistant and not message.get("is_detailed"):
+                    cols = st.columns([1, 1, 2, 4])
+                else:
+                    cols = st.columns([1, 1, 6])
                 with cols[0]:
                     if st.button("\U0001f44d", key=f"pos_{idx}", help="Correct antwoord"):
                         st.session_state.feedback[fb_key] = "positief"
@@ -607,6 +666,43 @@ for idx, message in enumerate(st.session_state.messages):
                     if st.button("\U0001f44e", key=f"neg_{idx}", help="Niet correct"):
                         st.session_state[f"show_comment_{idx}"] = True
                         st.rerun()
+                # "Meer hierover" knop — alleen bij het laatste antwoord
+                if is_last_assistant and not message.get("is_detailed"):
+                    with cols[2]:
+                        if st.button("Meer hierover", key=f"detail_{idx}", help="Uitgebreider antwoord"):
+                            st.session_state["detail_request"] = idx
+                            st.rerun()
+
+# Verwerk "Meer hierover" verzoek
+if "detail_request" in st.session_state:
+    detail_idx = st.session_state.pop("detail_request")
+    # Zoek de oorspronkelijke vraag
+    question = ""
+    for prev in range(detail_idx - 1, -1, -1):
+        if st.session_state.messages[prev]["role"] == "user":
+            question = st.session_state.messages[prev]["content"]
+            break
+    short_answer = st.session_state.messages[detail_idx]["content"]
+
+    if question:
+        with st.chat_message("assistant", avatar=ASSISTANT_AVATAR):
+            thinking_placeholder = st.empty()
+            thinking_placeholder.markdown(THINKING_HTML, unsafe_allow_html=True)
+
+            start_time = time.time()
+            result = engine.ask_detailed(question, short_answer)
+            elapsed = time.time() - start_time
+
+            thinking_placeholder.empty()
+
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": result["answer"],
+            "sources": result["sources"],
+            "response_time": elapsed,
+            "is_detailed": True,
+        })
+        st.rerun()
 
 # Chat invoer
 if prompt := st.chat_input("Stel een nieuwe vraag over de verkiezingen..."):
@@ -634,5 +730,13 @@ if prompt := st.chat_input("Stel een nieuwe vraag over de verkiezingen..."):
         "response_time": elapsed,
     })
 
-    # Herlaad pagina zodat alles netjes via de berichtenloop wordt getoond
+    # Herlaad pagina zodat bronnen en feedback-knoppen getoond worden
     st.rerun()
+
+# Scroll naar het laatste bericht na rerun
+if st.session_state.messages:
+    import streamlit.components.v1 as components
+    components.html(
+        '<script>window.parent.document.querySelector("section.main").scrollTo(0, window.parent.document.querySelector("section.main").scrollHeight);</script>',
+        height=0,
+    )
