@@ -565,14 +565,14 @@ def render_response_time(seconds: float):
 
 
 @st.cache_resource
-def load_engine(_version=2):
+def load_engine_v2():
     """Laad de QA engine (cached zodat het maar 1x gebeurt)."""
     return QAEngine()
 
 
 # Laad engine
 with st.spinner("Chatbot wordt geladen..."):
-    engine = load_engine()
+    engine = load_engine_v2()
 
 # Chat-geschiedenis en feedback-status
 if "messages" not in st.session_state:
