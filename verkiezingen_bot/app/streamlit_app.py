@@ -70,56 +70,16 @@ ASSISTANT_AVATAR = svg_to_data_uri(PENCIL_AVATAR_SVG)
 USER_AVATAR = svg_to_data_uri(USER_AVATAR_SVG)
 
 
-# === FORCEER LIGHT MODE OP MOBIEL ===
-# Meta tag is effectiever dan CSS voor mobiele browsers (vooral Safari)
-st.markdown(
-    '<meta name="color-scheme" content="light only">'
-    '<meta name="supported-color-schemes" content="light only">',
-    unsafe_allow_html=True,
-)
-
 # === KIESRAAD HUISSTIJL ===
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap');
-
-    /* Forceer light mode overal */
-    :root {
-        color-scheme: light only !important;
-    }
 
     /* Verberg Streamlit standaard UI elementen */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
     .stDeployButton {display: none;}
-
-    /* Basis */
-    .stApp {
-        background-color: #ffffff !important;
-        color: #1a1a1a !important;
-    }
-
-    /* Blokkeer dark mode: overschrijf alles als de browser dark mode prefereert */
-    @media (prefers-color-scheme: dark) {
-        :root, html, body, .stApp, [data-testid="stAppViewContainer"],
-        [data-testid="stHeader"], [data-testid="stToolbar"],
-        section[data-testid="stSidebar"], .main, .block-container {
-            background-color: #ffffff !important;
-            color: #1a1a1a !important;
-        }
-        .stApp p, .stApp li, .stApp span, .stApp div, .stApp td, .stApp th,
-        .stApp label, .stApp input, .stApp textarea, .stApp button,
-        .stApp [class*="markdown"], .stApp [data-testid="stChatMessage"],
-        .stApp [data-testid="stChatMessage"] p {
-            color: #1a1a1a !important;
-            background-color: transparent !important;
-        }
-        [data-testid="stChatInput"] textarea {
-            background-color: #ffffff !important;
-            color: #1a1a1a !important;
-        }
-    }
 
     /* Alle tekst in DM Sans — brede override */
     .stApp,
@@ -194,7 +154,7 @@ st.markdown("""
 
     /* Bronnen box */
     .source-box {
-        background-color: #efefef;
+        background-color: rgba(0, 47, 91, 0.08);
         border-left: 4px solid #ee8050;
         padding: 0.8rem 1rem;
         margin-top: 0.8rem;
@@ -203,12 +163,11 @@ st.markdown("""
     }
     .source-box .source-title {
         font-weight: 600;
-        color: #002f5b;
         font-size: 0.85rem;
         margin-bottom: 0.3rem;
     }
     .source-box a {
-        color: #002f5b;
+        color: #ee8050;
         text-decoration: none;
         font-weight: 500;
     }
@@ -222,7 +181,6 @@ st.markdown("""
     }
     .source-box li {
         margin-bottom: 0.2rem;
-        color: #333;
     }
 
     /* Responstijd badge */
@@ -239,19 +197,17 @@ st.markdown("""
 
     /* Welkomstblok */
     .welcome-card {
-        background: #efefef;
+        background: rgba(0, 47, 91, 0.08);
         border-radius: 10px;
         padding: 1.8rem;
         margin-bottom: 1rem;
     }
     .welcome-card h3 {
-        color: #002f5b;
         margin-top: 0;
         font-weight: 700;
         font-size: 1.3rem;
     }
     .welcome-card p {
-        color: #333;
         margin-bottom: 0.8rem;
         line-height: 1.5;
     }
@@ -259,12 +215,11 @@ st.markdown("""
         display: flex;
         align-items: flex-start;
         gap: 0.6rem;
-        background: white;
+        background: rgba(0, 47, 91, 0.06);
         border-radius: 8px;
         padding: 0.7rem 0.9rem;
         margin-top: 0.6rem;
         font-size: 0.84rem;
-        color: #444;
         line-height: 1.5;
     }
     .welcome-notice .wn-icon {
@@ -272,7 +227,7 @@ st.markdown("""
         margin-top: 1px;
     }
     .welcome-notice a {
-        color: #002f5b;
+        color: #ee8050;
         font-weight: 500;
     }
     .welcome-notice a:hover {
@@ -288,7 +243,7 @@ st.markdown("""
     }
     .feedback-thanks {
         font-size: 0.8rem;
-        color: #666;
+        opacity: 0.6;
         margin-top: 0.4rem;
     }
 
@@ -298,7 +253,6 @@ st.markdown("""
         align-items: center;
         gap: 12px;
         padding: 0.5rem 0;
-        color: #002f5b;
     }
     .thinking-animation .thinking-text {
         font-size: 0.9rem;
@@ -409,7 +363,7 @@ st.markdown("""
     }
     div[data-testid="stRadio"] > div > div {
         display: inline-flex !important;
-        background: #efefef;
+        background: rgba(0, 47, 91, 0.08);
         border-radius: 6px;
         padding: 3px;
         gap: 2px;
@@ -420,7 +374,7 @@ st.markdown("""
         font-family: 'DM Sans', sans-serif !important;
         font-size: 0.82rem !important;
         font-weight: 500 !important;
-        color: #666 !important;
+        opacity: 0.6;
         cursor: pointer;
         margin: 0 !important;
         white-space: nowrap;
@@ -431,6 +385,7 @@ st.markdown("""
         background: #002f5b !important;
         color: white !important;
         font-weight: 600 !important;
+        opacity: 1;
     }
     /* Verberg de radio bolletjes */
     div[data-testid="stRadio"] input[type="radio"] {
