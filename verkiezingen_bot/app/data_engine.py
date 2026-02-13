@@ -64,9 +64,6 @@ stembureaus (id, gemeente_id, stembureau_code, naam, postcode,
 stemmen_partij (stembureau_id, partij_id, stemmen)
   -- stemmen per partij per stembureau
 
-stemmen_kandidaat (stembureau_id, kandidaat_id, stemmen)
-  -- stemmen per kandidaat per stembureau
-
 zetels (verkiezing_id, partij_id, zetels)
   -- zetelverdeling
 
@@ -134,7 +131,7 @@ Bijzonderheden in de data:
 - NBSB: staat in de data als "gemeente" maar is geen echte gemeente. Het bevat stemmen die niet aan een fysiek stembureau zijn gekoppeld. Bij vragen over gemeenten moet NBSB worden uitgesloten, tenzij de gebruiker er expliciet naar vraagt. Filter met: WHERE gemeente != 'NBSB'.
 
 Aggregatieniveaus (hiërarchie: stembureau → GSB → HSB → CSB):
-- Stembureau-niveau: gebruik stembureaus, stemmen_partij, stemmen_kandidaat, of v_stembureau_overzicht.
+- Stembureau-niveau: gebruik stembureaus, stemmen_partij, of v_stembureau_overzicht. NB: kandidaat-stemmen zijn NIET beschikbaar op stembureau-niveau.
 - Gemeente-niveau (GSB): gebruik v_gemeente_partij voor stemmen per partij. Voor andere gemeente-aggregaties: groepeer stembureaus op gemeente_id.
 - Kieskring-niveau (HSB): gebruik v_kieskring_partij of kieskringen + kieskring_stemmen_partij. Dit zijn de officiële HSB-totalen, NIET geaggregeerd vanuit gemeenten.
 - Landelijk (CSB): gebruik csb_totalen voor totaalcijfers, csb_stemmen_partij voor stemmen per partij. Dit is het officiële landelijke totaal.
@@ -167,7 +164,7 @@ Vraag: Hoeveel zetels heeft D66?
 SQL: SELECT p.naam_kort, z.zetels FROM zetels z JOIN partijen p ON p.id = z.partij_id WHERE p.naam_kort = 'D66';
 
 Vraag: Top 5 kandidaten met de meeste voorkeurstemmen
-SQL: SELECT k.voornaam, k.tussenvoegsel, k.naam, p.naam_kort, SUM(sk.stemmen) AS stemmen FROM stemmen_kandidaat sk JOIN kandidaten k ON k.id = sk.kandidaat_id JOIN partijen p ON p.id = k.partij_id GROUP BY k.id ORDER BY stemmen DESC LIMIT 5;
+SQL: SELECT k.voornaam, k.tussenvoegsel, k.naam, p.naam_kort, csk.stemmen FROM csb_stemmen_kandidaat csk JOIN kandidaten k ON k.id = csk.kandidaat_id JOIN partijen p ON p.id = k.partij_id ORDER BY csk.stemmen DESC LIMIT 5;
 
 Vraag: Hoeveel stemmen kreeg de PVV in kieskring Utrecht?
 SQL: SELECT stemmen FROM v_kieskring_partij WHERE kieskring = 'Utrecht' AND partij_kort = 'PVV';

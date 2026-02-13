@@ -16,7 +16,6 @@ verkiezingen_bot/venv/
 .idea/
 
 # Data bestanden (gegenereerd)
-verkiezingen_bot/data/verkiezingen.db
 verkiezingen_bot/data/verkiezingen.db-wal
 verkiezingen_bot/data/verkiezingen.db-shm
 verkiezingen_bot/data/EML/

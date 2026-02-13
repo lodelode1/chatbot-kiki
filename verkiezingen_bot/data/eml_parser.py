@@ -142,13 +142,6 @@ CREATE TABLE IF NOT EXISTS stemmen_partij (
     PRIMARY KEY (stembureau_id, partij_id)
 );
 
-CREATE TABLE IF NOT EXISTS stemmen_kandidaat (
-    stembureau_id   INTEGER NOT NULL REFERENCES stembureaus(id),
-    kandidaat_id    INTEGER NOT NULL REFERENCES kandidaten(id),
-    stemmen         INTEGER NOT NULL DEFAULT 0,
-    PRIMARY KEY (stembureau_id, kandidaat_id)
-);
-
 CREATE TABLE IF NOT EXISTS zetels (
     verkiezing_id   INTEGER NOT NULL REFERENCES verkiezingen(id),
     partij_id       INTEGER NOT NULL REFERENCES partijen(id),
@@ -297,8 +290,6 @@ CREATE INDEX IF NOT EXISTS idx_gemeenten_verkiezing ON gemeenten(verkiezing_id);
 CREATE INDEX IF NOT EXISTS idx_stembureaus_gemeente ON stembureaus(gemeente_id);
 CREATE INDEX IF NOT EXISTS idx_stemmen_partij_stembureau ON stemmen_partij(stembureau_id);
 CREATE INDEX IF NOT EXISTS idx_stemmen_partij_partij ON stemmen_partij(partij_id);
-CREATE INDEX IF NOT EXISTS idx_stemmen_kandidaat_stembureau ON stemmen_kandidaat(stembureau_id);
-CREATE INDEX IF NOT EXISTS idx_stemmen_kandidaat_kandidaat ON stemmen_kandidaat(kandidaat_id);
 CREATE INDEX IF NOT EXISTS idx_partijen_naam_kort ON partijen(naam_kort);
 CREATE INDEX IF NOT EXISTS idx_gemeenten_naam ON gemeenten(naam);
 CREATE INDEX IF NOT EXISTS idx_kieskringen_verkiezing ON kieskringen(verkiezing_id);
@@ -525,19 +516,9 @@ def parse_gemeente_tellingen(
     if not gemeente_files:
         raise FileNotFoundError("Geen gemeente tellingen gevonden")
 
-    # Bouw kandidaat lookup: (partij_id, volgnr) -> kandidaat_id
-    kandidaat_lookup = {}
-    rows = conn.execute(
-        "SELECT id, partij_id, volgnr FROM kandidaten WHERE verkiezing_id=?",
-        (verkiezing_id,),
-    ).fetchall()
-    for kid, pid, vnr in rows:
-        kandidaat_lookup[(pid, vnr)] = kid
-
     gemeente_count = 0
     stembureau_count = 0
     stemmen_partij_rows = []
-    stemmen_kandidaat_rows = []
 
     for filename, root in gemeente_files:
         # Gemeente info
@@ -620,37 +601,24 @@ def parse_gemeente_tellingen(
             sb_id = sb_row[0]
             stembureau_count += 1
 
-            # Stemmen per partij en per kandidaat
-            partij_stemmen, kandidaat_stemmen = _parse_stemmen(ruv, NS)
+            # Stemmen per partij (kandidaat-niveau overgeslagen voor db-grootte)
+            partij_stemmen, _ = _parse_stemmen(ruv, NS)
 
             for pnr, votes in partij_stemmen.items():
                 pid = partij_map.get(pnr)
                 if pid:
                     stemmen_partij_rows.append((sb_id, pid, votes))
 
-            for key, votes in kandidaat_stemmen.items():
-                pnr, vnr = key.split("_")
-                pid = partij_map.get(pnr)
-                if pid:
-                    kid = kandidaat_lookup.get((pid, int(vnr)))
-                    if kid:
-                        stemmen_kandidaat_rows.append((sb_id, kid, votes))
-
     # Bulk insert stemmen
     conn.executemany(
         "INSERT OR IGNORE INTO stemmen_partij (stembureau_id, partij_id, stemmen) VALUES (?,?,?)",
         stemmen_partij_rows,
-    )
-    conn.executemany(
-        "INSERT OR IGNORE INTO stemmen_kandidaat (stembureau_id, kandidaat_id, stemmen) VALUES (?,?,?)",
-        stemmen_kandidaat_rows,
     )
     conn.commit()
 
     print(f"  Gemeenten: {gemeente_count}")
     print(f"  Stembureaus: {stembureau_count}")
     print(f"  Stemmen partij rijen: {len(stemmen_partij_rows)}")
-    print(f"  Stemmen kandidaat rijen: {len(stemmen_kandidaat_rows)}")
 
 
 def parse_kieskring_tellingen(
@@ -983,7 +951,7 @@ def build_database(eml_dir: Path = EML_DIR, db_path: Path = DB_PATH):
         # Verificatie
         print("\n=== Verificatie ===")
         for table in ["verkiezingen", "partijen", "kandidaten", "gemeenten", "stembureaus",
-                       "stemmen_partij", "stemmen_kandidaat", "zetels", "gekozen_kandidaten",
+                       "stemmen_partij", "zetels", "gekozen_kandidaten",
                        "kieskringen", "kieskring_stemmen_partij", "kieskring_stemmen_kandidaat",
                        "csb_totalen", "csb_stemmen_partij", "csb_stemmen_kandidaat"]:
             count = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
