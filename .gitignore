@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtual environment
+venv/
+verkiezingen_bot/venv/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Data bestanden (gegenereerd)
+verkiezingen_bot/data/verkiezingen.db
+verkiezingen_bot/data/verkiezingen.db-wal
+verkiezingen_bot/data/verkiezingen.db-shm
+verkiezingen_bot/data/EML/
+
+# Overige
+.claude/
+nul
+
+# OS
+.DS_Store
+Thumbs.db

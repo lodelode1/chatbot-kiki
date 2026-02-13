@@ -17,6 +17,7 @@ python-dotenv
 
 # UI
 streamlit
+pandas
 
 # Utilities
 tqdm

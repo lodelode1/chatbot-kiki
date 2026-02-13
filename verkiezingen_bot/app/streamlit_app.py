@@ -21,6 +21,9 @@ try:
 except FileNotFoundError:
     pass
 
+import pandas as pd
+
+from verkiezingen_bot.app.data_engine import DataEngine
 from verkiezingen_bot.app.feedback import save_feedback
 from verkiezingen_bot.app.qa import QAEngine
 
@@ -72,6 +75,11 @@ st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap');
 
+    /* Forceer light mode — voorkomt dat mobiele browsers dark mode toepassen */
+    :root, html, body {
+        color-scheme: light !important;
+    }
+
     /* Verberg Streamlit standaard UI elementen */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
@@ -81,6 +89,10 @@ st.markdown("""
     /* Basis */
     .stApp {
         background-color: #ffffff;
+        color: #1a1a1a;
+    }
+    .stApp, .stApp * {
+        color-scheme: light !important;
     }
 
     /* Alle tekst in DM Sans — brede override */
@@ -364,6 +376,45 @@ st.markdown("""
         border-radius: 1px;
     }
 
+    /* === MODUS TOGGLE (Streamlit radio als segmented control) === */
+    div[data-testid="stRadio"] > div {
+        display: flex;
+        justify-content: center;
+    }
+    div[data-testid="stRadio"] > div > div {
+        display: inline-flex !important;
+        background: #efefef;
+        border-radius: 6px;
+        padding: 3px;
+        gap: 2px;
+    }
+    div[data-testid="stRadio"] > div > div > label {
+        padding: 5px 16px !important;
+        border-radius: 4px !important;
+        font-family: 'DM Sans', sans-serif !important;
+        font-size: 0.82rem !important;
+        font-weight: 500 !important;
+        color: #666 !important;
+        cursor: pointer;
+        margin: 0 !important;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+    }
+    div[data-testid="stRadio"] > div > div > label[data-checked="true"],
+    div[data-testid="stRadio"] > div > div > label:has(input:checked) {
+        background: #002f5b !important;
+        color: white !important;
+        font-weight: 600 !important;
+    }
+    /* Verberg de radio bolletjes */
+    div[data-testid="stRadio"] input[type="radio"] {
+        display: none !important;
+    }
+    div[data-testid="stRadio"] > div > div > label > div:first-child {
+        display: none !important;
+    }
+
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -536,6 +587,19 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+def format_sql(sql: str) -> str:
+    """Formatteer een SQL query voor leesbaarheid."""
+    import re
+    keywords = ["SELECT", "FROM", "WHERE", "JOIN", "LEFT JOIN", "RIGHT JOIN",
+                "INNER JOIN", "GROUP BY", "ORDER BY", "HAVING", "LIMIT", "UNION",
+                "ON", "AND", "OR"]
+    result = sql.strip()
+    for kw in keywords:
+        # Voeg een newline toe voor elk keyword (als het niet aan het begin staat)
+        result = re.sub(rf"(?<!\A)\b({kw})\b", rf"\n\1", result, flags=re.IGNORECASE)
+    return result.strip()
+
+
 def render_sources(sources: list[dict]):
     """Toon bronverwijzingen onder een antwoord."""
     if not sources:
@@ -565,20 +629,43 @@ def render_response_time(seconds: float):
 
 
 @st.cache_resource
-def load_engine_v2():
+def load_engine_v3():
     """Laad de QA engine (cached zodat het maar 1x gebeurt)."""
     return QAEngine()
 
 
-# Laad engine
-with st.spinner("Chatbot wordt geladen..."):
-    engine = load_engine_v2()
+@st.cache_resource
+def load_data_engine_v2():
+    """Laad de Data engine (cached)."""
+    return DataEngine()
 
-# Chat-geschiedenis en feedback-status
+
+# Laad engines
+with st.spinner("Chatbot wordt geladen..."):
+    engine = load_engine_v3()
+    data_engine = load_data_engine_v2()
+
+# Chat-geschiedenis, feedback-status en modus
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "feedback" not in st.session_state:
     st.session_state.feedback = {}  # {msg_index: "positief" | "negatief"}
+if "mode" not in st.session_state:
+    st.session_state.mode = "kennis"  # "kennis" of "data"
+
+# Modus-toggle (subtiel, als segmented control)
+mode = st.radio(
+    "Modus",
+    options=["kennis", "data"],
+    format_func=lambda x: "Toolkit" if x == "kennis" else "Verkiezingsdata",
+    index=0 if st.session_state.mode == "kennis" else 1,
+    horizontal=True,
+    label_visibility="collapsed",
+    key="mode_radio",
+)
+if mode != st.session_state.mode:
+    st.session_state.mode = mode
+    st.rerun()
 
 # Welkomstblok als er nog geen berichten zijn
 if not st.session_state.messages:
@@ -591,7 +678,8 @@ if not st.session_state.messages:
         <h3>{hex_icon("ballot", 32)} Welkom bij Kiki!</h3>
         <p>Ik ben Kiki, een chatbot die vragen beantwoordt over de
         <strong>gemeenteraadsverkiezingen 2026</strong>. Mijn kennis is gebaseerd op
-        de Toolkit Verkiezingen van de Kiesraad. Stel hieronder een vraag!</p>
+        de Toolkit Verkiezingen van de Kiesraad. Via de toggle hierboven kun je
+        ook <strong>databankvragen</strong> stellen over verkiezingsuitslagen (TK2025).</p>
         <div class="welcome-notice">
             <span class="wn-icon">{notice_icon}</span>
             <span><strong>Goed om te weten:</strong> Kiki heeft geen geheugen — elke vraag
@@ -612,10 +700,22 @@ for idx, message in enumerate(st.session_state.messages):
     avatar = ASSISTANT_AVATAR if message["role"] == "assistant" else USER_AVATAR
     with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
-        if message.get("sources"):
+
+        # Datavraag: toon dataframe + SQL onderaan
+        if message.get("is_data"):
+            if message.get("data_table"):
+                df = pd.DataFrame(message["data_table"])
+                st.dataframe(df, use_container_width=True)
+        elif message.get("sources"):
             render_sources(message["sources"])
+
         if message.get("response_time"):
             render_response_time(message["response_time"])
+
+        # SQL-box onderaan (na response time, zelfde positie als bronnen)
+        if message.get("is_data") and message.get("sql"):
+            if st.checkbox("Voor de datanerds: bekijk de SQL query", key=f"sql_{idx}", value=False):
+                st.code(format_sql(message["sql"]), language="sql")
 
         # Feedback-knoppen bij assistant-berichten
         if message["role"] == "assistant":
@@ -646,9 +746,10 @@ for idx, message in enumerate(st.session_state.messages):
                     del st.session_state[f"show_comment_{idx}"]
                     st.rerun()
             else:
-                # Toon duim knoppen + "Meer hierover" knop
+                # Toon duim knoppen + "Meer hierover" knop (niet bij datavragen)
                 is_last_assistant = idx == len(st.session_state.messages) - 1
-                if is_last_assistant and not message.get("is_detailed"):
+                show_detail = is_last_assistant and not message.get("is_detailed") and not message.get("is_data")
+                if show_detail:
                     cols = st.columns([1, 1, 2, 4])
                 else:
                     cols = st.columns([1, 1, 6])
@@ -666,8 +767,8 @@ for idx, message in enumerate(st.session_state.messages):
                     if st.button("\U0001f44e", key=f"neg_{idx}", help="Niet correct"):
                         st.session_state[f"show_comment_{idx}"] = True
                         st.rerun()
-                # "Meer hierover" knop — alleen bij het laatste antwoord
-                if is_last_assistant and not message.get("is_detailed"):
+                # "Meer hierover" knop — alleen bij het laatste kennisvraag-antwoord
+                if show_detail:
                     with cols[2]:
                         if st.button("Meer hierover", key=f"detail_{idx}", help="Uitgebreider antwoord"):
                             st.session_state["detail_request"] = idx
@@ -704,8 +805,13 @@ if "detail_request" in st.session_state:
         })
         st.rerun()
 
-# Chat invoer
-if prompt := st.chat_input("Stel een nieuwe vraag over de verkiezingen..."):
+# Chat invoer met placeholder afhankelijk van modus
+if st.session_state.mode == "data":
+    placeholder = "Stel een datavraag..."
+else:
+    placeholder = "Stel een vraag over het verkiezingsproces..."
+
+if prompt := st.chat_input(placeholder):
     # Sla vraag op en toon in chat
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar=USER_AVATAR):
@@ -717,20 +823,33 @@ if prompt := st.chat_input("Stel een nieuwe vraag over de verkiezingen..."):
         thinking_placeholder.markdown(THINKING_HTML, unsafe_allow_html=True)
 
         start_time = time.time()
-        result = engine.ask(prompt)
-        elapsed = time.time() - start_time
 
-        thinking_placeholder.empty()
+        if st.session_state.mode == "data":
+            result = data_engine.ask_data(prompt)
+            elapsed = time.time() - start_time
+            thinking_placeholder.empty()
 
-    # Sla antwoord op in geschiedenis
-    st.session_state.messages.append({
-        "role": "assistant",
-        "content": result["answer"],
-        "sources": result["sources"],
-        "response_time": elapsed,
-    })
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": result["answer"],
+                "response_time": elapsed,
+                "is_data": True,
+                "sql": result.get("sql", ""),
+                "data_table": result.get("data_table", []),
+            })
+        else:
+            result = engine.ask(prompt)
+            elapsed = time.time() - start_time
+            thinking_placeholder.empty()
 
-    # Herlaad pagina zodat bronnen en feedback-knoppen getoond worden
+            st.session_state.messages.append({
+                "role": "assistant",
+                "content": result["answer"],
+                "sources": result["sources"],
+                "response_time": elapsed,
+            })
+
+    # Herlaad pagina zodat bronnen/data en feedback-knoppen getoond worden
     st.rerun()
 
 # Scroll naar het laatste bericht na rerun
