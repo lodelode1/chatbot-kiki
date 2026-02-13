@@ -70,14 +70,22 @@ ASSISTANT_AVATAR = svg_to_data_uri(PENCIL_AVATAR_SVG)
 USER_AVATAR = svg_to_data_uri(USER_AVATAR_SVG)
 
 
+# === FORCEER LIGHT MODE OP MOBIEL ===
+# Meta tag is effectiever dan CSS voor mobiele browsers (vooral Safari)
+st.markdown(
+    '<meta name="color-scheme" content="light only">'
+    '<meta name="supported-color-schemes" content="light only">',
+    unsafe_allow_html=True,
+)
+
 # === KIESRAAD HUISSTIJL ===
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap');
 
-    /* Forceer light mode — voorkomt dat mobiele browsers dark mode toepassen */
-    :root, html, body {
-        color-scheme: light !important;
+    /* Forceer light mode overal */
+    :root {
+        color-scheme: light only !important;
     }
 
     /* Verberg Streamlit standaard UI elementen */
@@ -88,11 +96,29 @@ st.markdown("""
 
     /* Basis */
     .stApp {
-        background-color: #ffffff;
-        color: #1a1a1a;
+        background-color: #ffffff !important;
+        color: #1a1a1a !important;
     }
-    .stApp, .stApp * {
-        color-scheme: light !important;
+
+    /* Blokkeer dark mode: overschrijf alles als de browser dark mode prefereert */
+    @media (prefers-color-scheme: dark) {
+        :root, html, body, .stApp, [data-testid="stAppViewContainer"],
+        [data-testid="stHeader"], [data-testid="stToolbar"],
+        section[data-testid="stSidebar"], .main, .block-container {
+            background-color: #ffffff !important;
+            color: #1a1a1a !important;
+        }
+        .stApp p, .stApp li, .stApp span, .stApp div, .stApp td, .stApp th,
+        .stApp label, .stApp input, .stApp textarea, .stApp button,
+        .stApp [class*="markdown"], .stApp [data-testid="stChatMessage"],
+        .stApp [data-testid="stChatMessage"] p {
+            color: #1a1a1a !important;
+            background-color: transparent !important;
+        }
+        [data-testid="stChatInput"] textarea {
+            background-color: #ffffff !important;
+            color: #1a1a1a !important;
+        }
     }
 
     /* Alle tekst in DM Sans — brede override */
