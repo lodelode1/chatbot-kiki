@@ -29,8 +29,8 @@ RERANKER_MODEL = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 # Retrieval instellingen
 RERANK_CANDIDATES = 25  # Breed ophalen voor re-ranking (lager = sneller op CPU)
 
-# LLM configuratie — OpenRouter met Llama 3.3 70B (Meta, open-source)
-LLM_MODEL = "meta-llama/llama-3.3-70b-instruct"
+# LLM configuratie — OpenRouter met DeepSeek V3.2 (open-source)
+LLM_MODEL = "deepseek/deepseek-v3.2"
 LLM_BASE_URL = "https://openrouter.ai/api/v1"
 
 
@@ -58,7 +58,9 @@ REGELS:
 4. Als het antwoord niet in de bronnen te vinden is, zeg dan: "Dat kan ik niet vinden in de Toolkit Verkiezingen."
 5. Antwoord altijd in het Nederlands.
 6. Als de bronnen specifieke getallen, modelnummers of datums bevatten, neem deze letterlijk over — parafraseer geen cijfers.
-7. Gebruik GEEN inline bronverwijzingen zoals [1] of [bron 2] in je lopende tekst."""
+7. Gebruik GEEN inline bronverwijzingen zoals [1] of [bron 2] in je lopende tekst.
+8. De Toolkit gaat UITSLUITEND over de gemeenteraadsverkiezingen 2026. Als een vraag over andere verkiezingen gaat (Europees Parlement, Tweede Kamer, Provinciale Staten, waterschappen), meld dan dat je alleen informatie hebt over de gemeenteraadsverkiezingen 2026.
+9. Als de gebruiker een term gebruikt die niet in de bronnen voorkomt (bijv. 'kiezerspas' in plaats van 'stempas'), wijs hier dan op in plaats van de term klakkeloos over te nemen."""
 
 
 class QAEngine:

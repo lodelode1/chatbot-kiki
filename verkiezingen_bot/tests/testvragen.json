@@ -1,0 +1,220 @@
+[
+  {
+    "id": 1,
+    "vraag": "Wanneer zijn de gemeenteraadsverkiezingen?",
+    "verwacht_antwoord": "Op woensdag 18 maart 2026.",
+    "bron_passage": "De volgende gemeenteraadsverkiezingen zijn op woensdag 18 maart 2026.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 2,
+    "vraag": "Tot wanneer kunnen kandidatenlijsten worden ingeleverd?",
+    "verwacht_antwoord": "Op maandag 2 februari 2026, tussen 9.00 en 17.00 uur.",
+    "bron_passage": "Dag van kandidaatstelling: Maandag 2 februari 2026, 9.00-17.00 uur",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 3,
+    "vraag": "Hoeveel volmachtstemmen mag een kiezer uitbrengen?",
+    "verwacht_antwoord": "Maximaal 2 volmachtstemmen, naast de eigen stem.",
+    "bron_passage": "Een kiezer mag naast zijn eigen stem maximaal 2 volmachtstemmen uitbrengen.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 4,
+    "vraag": "Wanneer moeten de stempassen uiterlijk bij de kiezers zijn?",
+    "verwacht_antwoord": "Uiterlijk woensdag 4 maart 2026.",
+    "bron_passage": "Uiterlijk woensdag 4 maart 2026: Stempassen in bezit kiezer",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 5,
+    "vraag": "Tot wanneer kan een kiezer mondeling een vervangende stempas aanvragen?",
+    "verwacht_antwoord": "Uiterlijk dinsdag 17 maart 2026 om 12.00 uur, op het gemeentehuis.",
+    "bron_passage": "Uiterlijk dinsdag 17 maart 2026, 12.00 uur: Een kiezer kan uiterlijk dinsdag 17 maart mondeling een vervangende stempas aanvragen op het gemeentehuis.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 6,
+    "vraag": "Welke identiteitsbewijzen zijn geldig bij het stembureau?",
+    "verwacht_antwoord": "Een paspoort, rijbewijs of identiteitskaart van Nederland of een ander EU-land. Ook een Nederlands vreemdelingendocument is toegestaan. Het document mag niet meer dan 5 jaar verlopen zijn (minimaal geldig tot 19 maart 2021). Bij een gestolen of vermist identiteitsbewijs mag een verklaring van vermissing van de gemeente worden getoond, in combinatie met een pasje met naam en foto.",
+    "bron_passage": "Het mag een paspoort, rijbewijs of identiteitskaart van Nederland of een ander EU-land zijn. Ook een Nederlands vreemdelingendocument is toegestaan. ... Het document is niet meer dan 5 jaar verlopen. ... Kiezers van wie het identiteitsbewijs is gestolen of vermist, mogen een verklaring van vermissing van de gemeente tonen, in combinatie met een pasje met hun naam en foto.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 7,
+    "vraag": "Wanneer is een stem geldig?",
+    "verwacht_antwoord": "Als een stemvakje helemaal of voor een deel rood is gemaakt. Het maakt niet uit of dit met een kruisje, vinkje of op andere wijze is gedaan.",
+    "bron_passage": "Als één stemvakje helemaal of voor een deel rood is gemaakt, is de stem geldig. Het maakt hierbij niet uit of dit met een kruisje of vinkje is gedaan, of dat op een andere manier het stemvakje niet helemaal is ingekleurd.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 8,
+    "vraag": "Wanneer is een stem ongeldig?",
+    "verwacht_antwoord": "Als de keuze voor een kandidaat op een andere manier is gemaakt dan het inkleuren van een stemvakje en hierbij geen stemvakje (deels) rood is gemaakt.",
+    "bron_passage": "Als de keuze voor een kandidaat op een andere manier is gemaakt dan het inkleuren van een stemvakje en hierbij geen stemvakje (deels) rood is gemaakt is de stem ongeldig.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 9,
+    "vraag": "Wat is het verschil tussen decentrale en centrale stemopneming?",
+    "verwacht_antwoord": "Bij decentrale stemopneming tellen de stembureaus op de avond van de stemming de stemmen per lijst en per kandidaat. Bij centrale stemopneming tellen de stembureaus alleen per lijst; het GSB telt de volgende dag de stemmen op kandidaats- en lijstniveau.",
+    "bron_passage": "Decentrale stemopneming: Op de avond van de stemming tellen de stembureaus de stemmen per lijst én per kandidaat. ... Centrale stemopneming: Op de avond van de stemming tellen de stembureaus alleen de stemmen per lijst. ... Het GSB telt de volgende dag tijdens een openbare zitting de stemmen op kandidaats- en lijstniveau.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 10,
+    "vraag": "Wat is een ondersteuningsverklaring?",
+    "verwacht_antwoord": "Een schriftelijke verklaring (model H 4) die een kiezer aflegt bij de gemeente, waarmee de kiezer laat zien dat deze de deelname van een partij aan de gemeenteraadsverkiezing ondersteunt.",
+    "bron_passage": "Een ondersteuningsverklaring is een schriftelijke verklaring (model H 4) die een kiezer aflegt bij de gemeente. Met deze verklaring laat de kiezer zien dat deze de deelname van een partij aan de gemeenteraadsverkiezing ondersteunt.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 11,
+    "vraag": "Wanneer kunnen ondersteuningsverklaringen worden afgelegd?",
+    "verwacht_antwoord": "Van maandag 19 januari tot en met maandag 2 februari 2026, en ook op 4 en 5 februari 2026 (tijdens het herstel van verzuimen).",
+    "bron_passage": "Van maandag 19 januari tot en met maandag 2 februari en 4 en 5 februari kunnen kiezers een ondersteuningsverklaring afleggen voor nieuwe politieke groeperingen.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 12,
+    "vraag": "Hoeveel waarborgsom moet een nieuwe partij betalen om mee te doen?",
+    "verwacht_antwoord": "225 euro.",
+    "bron_passage": "Om mee te kunnen doen aan de gemeenteraadsverkiezing betaalt een nieuwe partij die nog geen zetel heeft in de gemeenteraad een waarborgsom van € 225.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 13,
+    "vraag": "Wat is een samenvoeging van aanduidingen?",
+    "verwacht_antwoord": "Dat houdt in dat 2 of meer partijen gezamenlijk een kandidatenlijst inleveren met daarboven de samenvoeging van hun partijnamen of afkortingen. Deze samengevoegde aanduiding komt ook op het stembiljet te staan.",
+    "bron_passage": "Een samenvoeging van aanduidingen houdt in dat 2 of meer partijen gezamenlijk één kandidatenlijst inleveren met daarboven de samenvoeging van hun partijnamen of de afkortingen daarvan. Deze samengevoegde aanduiding komt ook op het stembiljet te staan.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 14,
+    "vraag": "Wanneer kan OSV2020-KS gedownload worden?",
+    "verwacht_antwoord": "Vanaf 5 januari 2026.",
+    "bron_passage": "Ondersteunende Software Verkiezingen (OSV2020-KS) kan je vanaf 5 januari 2026 downloaden en installeren.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 15,
+    "vraag": "Is het gebruik van de uitslagprogrammatuur van de Kiesraad verplicht?",
+    "verwacht_antwoord": "Ja, de Wet programmatuur verkiezingsuitslagen (Wpv) maakt het gebruik verplicht voor gemeenten tijdens de uitslagvaststelling.",
+    "bron_passage": "Wet programmatuur verkiezingen: De Wet programmatuur verkiezingsuitslagen (Wpv) maakt het gebruik van de uitslagprogrammatuur van de Kiesraad verplicht voor gemeenten tijdens de uitslagvaststelling.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 16,
+    "vraag": "Wanneer levert de Kiesraad de uitslagprogrammatuur?",
+    "verwacht_antwoord": "21 dagen voor de dag van stemming.",
+    "bron_passage": "De Kiesraad levert de uitslagprogrammatuur 21 dagen voor de dag van stemming.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 17,
+    "vraag": "Tot wanneer kan een kiezer schriftelijk een vervangende stempas of volmacht aanvragen?",
+    "verwacht_antwoord": "Uiterlijk vrijdag 13 maart 2026.",
+    "bron_passage": "Uiterlijk vrijdag 13 maart 2026: Indienen schriftelijk verzoek: vervangende stempas, volmacht",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 18,
+    "vraag": "Tot wanneer kan beroep worden ingesteld tegen afwijzing van een registratie?",
+    "verwacht_antwoord": "Uiterlijk de 6e dag na bekendmaking van het besluit in het Gemeenteblad. Beroep bij de Afdeling bestuursrechtspraak van de Raad van State kan uiterlijk tot dinsdag 10 februari 2026.",
+    "bron_passage": "Mogelijke beroepen afwijzing registratie: Uiterlijk 6e dag na bekendmaking besluit in het Gemeenteblad ... Mogelijkheid tot indienen beroep bij de Afdeling bestuursrechtspraak van de Raad van State: Uiterlijk dinsdag 10 februari 2026",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 19,
+    "vraag": "Welk model wordt gebruikt voor het proces-verbaal van een stembureau bij decentrale stemopneming?",
+    "verwacht_antwoord": "Model N 10-1.",
+    "bron_passage": "Model N 10-1 (Proces-verbaal stembureau) - voor decentrale stemopneming",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 20,
+    "vraag": "Wat moet een gemachtigde doen bij het uitbrengen van een volmachtstem?",
+    "verwacht_antwoord": "De gemachtigde moet de volmachtstem tegelijk uitbrengen met de eigen stem, en stemmen zoals de persoon voor wie wordt gestemd heeft aangegeven.",
+    "bron_passage": "Als gemachtigde moet u: de volmachtstem tegelijk uitbrengen met uw eigen stem; de volmachtstem uitbrengen zoals de persoon voor wie u stemt heeft aangegeven",
+    "bron_document": "Toegankelijke versie schriftelijke volmacht (PDF, kiesraad.nl)",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 21,
+    "vraag": "Mag ik als 16-jarige stemmen bij de gemeenteraadsverkiezingen?",
+    "verwacht_antwoord": "Nee, je moet op de dag van stemming 18 jaar of ouder zijn.",
+    "bron_passage": "Om te mogen stemmen bij de gemeenteraadsverkiezingen moet iemand: Op de dag van stemming 18 jaar of ouder zijn",
+    "bron_document": "Kiesgerechtigdheid gemeenteraadsverkiezingen (PDF, kiesraad.nl)",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 26,
+    "vraag": "Hoe kan ik me als kandidaat aanmelden voor de Europese Parlementsverkiezingen?",
+    "verwacht_antwoord": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "bron_passage": null,
+    "type": "strikvraag",
+    "toelichting": "De Toolkit gaat over gemeenteraadsverkiezingen 2026, niet over het Europees Parlement.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 27,
+    "vraag": "Kan de burgemeester voorzitter van het gemeentelijk stembureau (GSB) zijn?",
+    "verwacht_antwoord": "Nee, de burgemeester is voorzitter van het centraal stembureau (CSB). Leden van het CSB zijn andere personen dan de leden van het GSB, dus de burgemeester kan niet ook lid of voorzitter van het GSB zijn.",
+    "bron_passage": "De burgemeester is voorzitter van het CSB. ... Let op: leden van het CSB zijn andere personen dan de leden van het GSB.",
+    "bron_document": "Instructie het centraal stembureau + Registratie en kandidaatstelling GR26",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 28,
+    "vraag": "Kun je met een kiezerspas ook een volmacht uitbrengen bij de gemeenteraadsverkiezingen?",
+    "verwacht_antwoord": "Bij de gemeenteraadsverkiezingen is er geen kiezerspas. Er is een stempas. Voor het uitbrengen van een volmacht is een apart volmachtbewijs of een ondertekende volmacht op de stempas nodig.",
+    "bron_passage": null,
+    "toelichting": "Kiezerspas bestaat alleen bij Tweede Kamerverkiezingen, niet bij GR26. De chatbot moet opmerken dat er bij GR26 geen kiezerspas is. Het begrip 'kiezerspas' komt in de GR26-bronnen niet voor.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 29,
+    "vraag": "Is de invoer van telresultaten in OSV2020-U tijdens de zitting van het GSB openbaar?",
+    "verwacht_antwoord": "Ja, de gehele zitting van het GSB is openbaar, net zoals de telling in het stembureau.",
+    "bron_passage": "De GSB zitting is net zoals de telling in het stembureau openbaar.",
+    "bron_document": "Organisatie stemming en telling GR26 (verkiezingskalender)",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 22,
+    "vraag": "Wat zijn de openingstijden van de stembureaus bij de Provinciale Statenverkiezingen?",
+    "verwacht_antwoord": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "bron_passage": null,
+    "type": "strikvraag",
+    "toelichting": "De Toolkit gaat over gemeenteraadsverkiezingen 2026, niet over Provinciale Staten. De chatbot moet niet zelf een antwoord verzinnen.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 23,
+    "vraag": "Hoeveel zetels heeft de gemeenteraad van Amsterdam?",
+    "verwacht_antwoord": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "bron_passage": null,
+    "type": "strikvraag",
+    "toelichting": "Gemeente-specifieke info staat niet in de Toolkit. De chatbot moet niet gokken.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 24,
+    "vraag": "Kan ik elektronisch stemmen bij de gemeenteraadsverkiezingen?",
+    "verwacht_antwoord": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "bron_passage": null,
+    "type": "strikvraag",
+    "toelichting": "Elektronisch stemmen bestaat niet in Nederland. Als de Toolkit hier niks over zegt, moet de chatbot dat eerlijk zeggen en niet zelf gaan uitleggen waarom het niet kan.",
+    "status": "nog_niet_geverifieerd"
+  },
+  {
+    "id": 25,
+    "vraag": "Wie is de huidige minister van Binnenlandse Zaken?",
+    "verwacht_antwoord": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "bron_passage": null,
+    "type": "strikvraag",
+    "toelichting": "Politieke actualiteit staat niet in de Toolkit. De chatbot moet niet uit eigen kennis antwoorden.",
+    "status": "nog_niet_geverifieerd"
+  }
+]

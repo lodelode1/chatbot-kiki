@@ -5,6 +5,7 @@ Design gebaseerd op de Kiesraad Toolkit Verkiezingen huisstijl.
 
 import base64
 import os
+import random
 import sys
 import time
 from pathlib import Path
@@ -21,9 +22,6 @@ try:
 except FileNotFoundError:
     pass
 
-import pandas as pd
-
-from verkiezingen_bot.app.data_engine import DataEngine
 from verkiezingen_bot.app.feedback import save_feedback
 from verkiezingen_bot.app.qa import QAEngine
 
@@ -80,6 +78,13 @@ st.markdown("""
     header {visibility: hidden;}
     footer {visibility: hidden;}
     .stDeployButton {display: none;}
+
+    /* Verberg sidebar */
+    [data-testid="stSidebar"],
+    [data-testid="stSidebarCollapsedControl"],
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
 
     /* Alle tekst in DM Sans — brede override */
     .stApp,
@@ -356,45 +361,6 @@ st.markdown("""
         border-radius: 1px;
     }
 
-    /* === MODUS TOGGLE (Streamlit radio als segmented control) === */
-    div[data-testid="stRadio"] > div {
-        display: flex;
-        justify-content: center;
-    }
-    div[data-testid="stRadio"] > div > div {
-        display: inline-flex !important;
-        background: rgba(0, 47, 91, 0.08);
-        border-radius: 6px;
-        padding: 3px;
-        gap: 2px;
-    }
-    div[data-testid="stRadio"] > div > div > label {
-        padding: 5px 16px !important;
-        border-radius: 4px !important;
-        font-family: 'DM Sans', sans-serif !important;
-        font-size: 0.82rem !important;
-        font-weight: 500 !important;
-        opacity: 0.6;
-        cursor: pointer;
-        margin: 0 !important;
-        white-space: nowrap;
-        transition: all 0.15s ease;
-    }
-    div[data-testid="stRadio"] > div > div > label[data-checked="true"],
-    div[data-testid="stRadio"] > div > div > label:has(input:checked) {
-        background: #002f5b !important;
-        color: white !important;
-        font-weight: 600 !important;
-        opacity: 1;
-    }
-    /* Verberg de radio bolletjes */
-    div[data-testid="stRadio"] input[type="radio"] {
-        display: none !important;
-    }
-    div[data-testid="stRadio"] > div > div > label > div:first-child {
-        display: none !important;
-    }
-
 
 </style>
 """, unsafe_allow_html=True)
@@ -530,14 +496,79 @@ def _stemvakje_svg(vakje_idx: int) -> str:
     )
 
 
-THINKING_HTML = (
-    '<div class="thinking-animation">'
-    '<div class="stemvakjes">'
-    + _stemvakje_svg(0) + _stemvakje_svg(1) + _stemvakje_svg(2)
-    + '</div>'
-    '<span class="thinking-text">Even denken...</span>'
-    '</div>'
-)
+LOADING_MESSAGES = [
+    "Stemhokjes bezorgen",
+    "Stembiljetten printen",
+    "Stembureauleden werven",
+    "GSB-leden aanwijzen",
+    "Stempassen bezorgen",
+    "Controleprotocol uitvoeren",
+    "OSV2020 twee keer invoeren",
+    "Stembescheiden vervoeren",
+    "Informatiepunt bellen",
+    "Telverschillen verklaren",
+    "Rode potloden slijpen",
+    "Stemlokalen inrichten",
+    "Kandidatenlijsten controleren",
+    "Stembussen verzegelen",
+    "Processen-verbaal opmaken",
+    "Ondersteuningsverklaringen stempelen",
+    "Uitslagen optellen",
+    "Verkiezingskalender raadplegen",
+    "Identiteitsbewijzen bestuderen",
+    "Volmachtbewijzen controleren",
+    "Waarborgsom innen",
+    "Partijnamen registreren",
+    "Stembiljet vouwen",
+    "Koffie zetten voor het stembureau",
+    "Stembus legen",
+    "Hertelling organiseren",
+    "Verkiezingsborden plaatsen",
+    "Vergaderzaal reserveren",
+    "Tellijsten uitdelen",
+    "Corrigendum ondertekenen",
+    "Bezwaren van kiezers opschrijven",
+]
+
+
+def _make_thinking_html() -> str:
+    """Genereer thinking-animatie met willekeurige wisselende laadteksten."""
+    msgs = random.sample(LOADING_MESSAGES, min(6, len(LOADING_MESSAGES)))
+    n = len(msgs)
+    cycle = n * 3  # 3 seconden per bericht
+    # CSS keyframes: elk bericht is 1/n van de tijd zichtbaar
+    span_pct = 100 / n
+    keyframes = ""
+    spans = ""
+    for i, msg in enumerate(msgs):
+        start = i * span_pct
+        show_end = start + span_pct - 2  # kleine gap voor fade
+        end = start + span_pct
+        keyframes += (
+            f"@keyframes msg{i} {{"
+            f"0%,{start:.1f}% {{opacity:0}} "
+            f"{start + 1:.1f}% {{opacity:1}} "
+            f"{show_end:.1f}% {{opacity:1}} "
+            f"{end:.1f}%,100% {{opacity:0}}"
+            f"}}\n"
+        )
+        spans += (
+            f'<span class="load-msg" style="animation:msg{i} {cycle}s infinite">'
+            f'{msg}...</span>'
+        )
+
+    return (
+        f'<style>{keyframes}'
+        f'.load-msg{{position:absolute !important;left:0;right:0;top:0;display:block;'
+        f'text-align:left;opacity:0;font-size:0.95em;color:#666;white-space:nowrap}}'
+        f'.load-msgs{{position:relative !important;flex:1;height:1.5em;margin-top:4px;overflow:hidden}}</style>'
+        f'<div class="thinking-animation">'
+        f'<div class="stemvakjes">'
+        + _stemvakje_svg(0) + _stemvakje_svg(1) + _stemvakje_svg(2)
+        + '</div>'
+        f'<div class="load-msgs">{spans}</div>'
+        f'</div>'
+    )
 
 # Header met stembiljet
 st.markdown("""
@@ -568,18 +599,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-def format_sql(sql: str) -> str:
-    """Formatteer een SQL query voor leesbaarheid."""
-    import re
-    keywords = ["SELECT", "FROM", "WHERE", "JOIN", "LEFT JOIN", "RIGHT JOIN",
-                "INNER JOIN", "GROUP BY", "ORDER BY", "HAVING", "LIMIT", "UNION",
-                "ON", "AND", "OR"]
-    result = sql.strip()
-    for kw in keywords:
-        # Voeg een newline toe voor elk keyword (als het niet aan het begin staat)
-        result = re.sub(rf"(?<!\A)\b({kw})\b", rf"\n\1", result, flags=re.IGNORECASE)
-    return result.strip()
-
 
 def render_sources(sources: list[dict]):
     """Toon bronverwijzingen onder een antwoord."""
@@ -591,7 +610,7 @@ def render_sources(sources: list[dict]):
     for src in sources:
         titel = src.get("titel", "Onbekend")
         url = src.get("url", "")
-        sectie = src.get("sectie", "")
+        sectie = src.get("sectie", "") or src.get("hoofdstuk", "")
         label = f"{titel} &ndash; {sectie}" if sectie else titel
         if url:
             html += f'<li><a href="{url}" target="_blank">{label}</a></li>'
@@ -615,38 +634,15 @@ def load_engine_v3():
     return QAEngine()
 
 
-@st.cache_resource
-def load_data_engine_v2():
-    """Laad de Data engine (cached)."""
-    return DataEngine()
-
-
 # Laad engines
 with st.spinner("Chatbot wordt geladen..."):
     engine = load_engine_v3()
-    data_engine = load_data_engine_v2()
 
-# Chat-geschiedenis, feedback-status en modus
+# Chat-geschiedenis en feedback-status
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "feedback" not in st.session_state:
     st.session_state.feedback = {}  # {msg_index: "positief" | "negatief"}
-if "mode" not in st.session_state:
-    st.session_state.mode = "kennis"  # "kennis" of "data"
-
-# Modus-toggle (subtiel, als segmented control)
-mode = st.radio(
-    "Modus",
-    options=["kennis", "data"],
-    format_func=lambda x: "Toolkit" if x == "kennis" else "Verkiezingsdata",
-    index=0 if st.session_state.mode == "kennis" else 1,
-    horizontal=True,
-    label_visibility="collapsed",
-    key="mode_radio",
-)
-if mode != st.session_state.mode:
-    st.session_state.mode = mode
-    st.rerun()
 
 # Welkomstblok als er nog geen berichten zijn
 if not st.session_state.messages:
@@ -659,8 +655,7 @@ if not st.session_state.messages:
         <h3>{hex_icon("ballot", 32)} Welkom bij Kiki!</h3>
         <p>Ik ben Kiki, een chatbot die vragen beantwoordt over de
         <strong>gemeenteraadsverkiezingen 2026</strong>. Mijn kennis is gebaseerd op
-        de Toolkit Verkiezingen van de Kiesraad. Via de toggle hierboven kun je
-        ook <strong>databankvragen</strong> stellen over verkiezingsuitslagen (TK2025).</p>
+        de Toolkit Verkiezingen van de Kiesraad.</p>
         <div class="welcome-notice">
             <span class="wn-icon">{notice_icon}</span>
             <span><strong>Goed om te weten:</strong> Kiki heeft geen geheugen — elke vraag
@@ -671,7 +666,8 @@ if not st.session_state.messages:
             <span class="wn-icon">{doc_icon}</span>
             <span><strong>Disclaimer:</strong> Kiki is een AI-assistent en kan fouten maken.
             Controleer belangrijke informatie altijd op
-            <a href="https://www.kiesraad.nl" target="_blank">kiesraad.nl</a>.</span>
+            <a href="https://www.kiesraad.nl" target="_blank">kiesraad.nl</a>.
+            <a href="/Over_Kiki" target="_self">Meer informatie over Kiki</a>.</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -682,21 +678,11 @@ for idx, message in enumerate(st.session_state.messages):
     with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
 
-        # Datavraag: toon dataframe + SQL onderaan
-        if message.get("is_data"):
-            if message.get("data_table"):
-                df = pd.DataFrame(message["data_table"])
-                st.dataframe(df, use_container_width=True)
-        elif message.get("sources"):
+        if message.get("sources"):
             render_sources(message["sources"])
 
         if message.get("response_time"):
             render_response_time(message["response_time"])
-
-        # SQL-box onderaan (na response time, zelfde positie als bronnen)
-        if message.get("is_data") and message.get("sql"):
-            if st.checkbox("Voor de datanerds: bekijk de SQL query", key=f"sql_{idx}", value=False):
-                st.code(format_sql(message["sql"]), language="sql")
 
         # Feedback-knoppen bij assistant-berichten
         if message["role"] == "assistant":
@@ -727,9 +713,9 @@ for idx, message in enumerate(st.session_state.messages):
                     del st.session_state[f"show_comment_{idx}"]
                     st.rerun()
             else:
-                # Toon duim knoppen + "Meer hierover" knop (niet bij datavragen)
+                # Toon duim knoppen + "Meer hierover" knop
                 is_last_assistant = idx == len(st.session_state.messages) - 1
-                show_detail = is_last_assistant and not message.get("is_detailed") and not message.get("is_data")
+                show_detail = is_last_assistant and not message.get("is_detailed")
                 if show_detail:
                     cols = st.columns([1, 1, 2, 4])
                 else:
@@ -769,7 +755,7 @@ if "detail_request" in st.session_state:
     if question:
         with st.chat_message("assistant", avatar=ASSISTANT_AVATAR):
             thinking_placeholder = st.empty()
-            thinking_placeholder.markdown(THINKING_HTML, unsafe_allow_html=True)
+            thinking_placeholder.markdown(_make_thinking_html(), unsafe_allow_html=True)
 
             start_time = time.time()
             result = engine.ask_detailed(question, short_answer)
@@ -786,13 +772,7 @@ if "detail_request" in st.session_state:
         })
         st.rerun()
 
-# Chat invoer met placeholder afhankelijk van modus
-if st.session_state.mode == "data":
-    placeholder = "Stel een datavraag..."
-else:
-    placeholder = "Stel een vraag over het verkiezingsproces..."
-
-if prompt := st.chat_input(placeholder):
+if prompt := st.chat_input("Stel een vraag over het verkiezingsproces..."):
     # Sla vraag op en toon in chat
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user", avatar=USER_AVATAR):
@@ -801,34 +781,19 @@ if prompt := st.chat_input(placeholder):
     # Toon denkanimatie terwijl antwoord wordt gegenereerd
     with st.chat_message("assistant", avatar=ASSISTANT_AVATAR):
         thinking_placeholder = st.empty()
-        thinking_placeholder.markdown(THINKING_HTML, unsafe_allow_html=True)
+        thinking_placeholder.markdown(_make_thinking_html(), unsafe_allow_html=True)
 
         start_time = time.time()
+        result = engine.ask(prompt)
+        elapsed = time.time() - start_time
+        thinking_placeholder.empty()
 
-        if st.session_state.mode == "data":
-            result = data_engine.ask_data(prompt)
-            elapsed = time.time() - start_time
-            thinking_placeholder.empty()
-
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": result["answer"],
-                "response_time": elapsed,
-                "is_data": True,
-                "sql": result.get("sql", ""),
-                "data_table": result.get("data_table", []),
-            })
-        else:
-            result = engine.ask(prompt)
-            elapsed = time.time() - start_time
-            thinking_placeholder.empty()
-
-            st.session_state.messages.append({
-                "role": "assistant",
-                "content": result["answer"],
-                "sources": result["sources"],
-                "response_time": elapsed,
-            })
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": result["answer"],
+            "sources": result["sources"],
+            "response_time": elapsed,
+        })
 
     # Herlaad pagina zodat bronnen/data en feedback-knoppen getoond worden
     st.rerun()

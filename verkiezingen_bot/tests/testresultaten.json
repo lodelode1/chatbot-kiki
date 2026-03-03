@@ -1,0 +1,329 @@
+[
+  {
+    "id": 1,
+    "vraag": "Wanneer zijn de gemeenteraadsverkiezingen?",
+    "verwacht": "Op woensdag 18 maart 2026.",
+    "antwoord": "De gemeenteraadsverkiezingen vinden plaats op woensdag 18 maart 2026. Deze verkiezingen worden eens in de vier jaar gehouden. Voor deze verkiezing is de gemeente zelf centraal stembureau, wat voor het eerst onder de Wet nieuwe procedure vaststelling verkiezingsuitslagen (npvv) gebeurt.",
+    "bronnen": [
+      "Gemeenteraadsverkiezingen",
+      "Uitvoeringsplan GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 2,
+    "vraag": "Tot wanneer kunnen kandidatenlijsten worden ingeleverd?",
+    "verwacht": "Op maandag 2 februari 2026, tussen 9.00 en 17.00 uur.",
+    "antwoord": "Kandidatenlijsten kunnen uitsluitend worden ingeleverd op maandag 2 februari 2026, tussen 9.00 en 17.00 uur bij het centraal stembureau (de gemeente). Het is gebruikelijk dat politieke partijen hiervoor van tevoren een afspraak maken. Na dit tijdstip is initiële inlevering niet meer mogelijk; wel kunnen op woensdag 4 en donderdag 5 februari tussen 9.00 en 17.00 uur nog verzuimen worden hersteld voor reeds ingeleverde lijsten.",
+    "bronnen": [
+      "Registratie en kandidaatstelling GR26",
+      "Bekijk Instructie kandidaatstelling voor gemeenten"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 3,
+    "vraag": "Hoeveel volmachtstemmen mag een kiezer uitbrengen?",
+    "verwacht": "Maximaal 2 volmachtstemmen, naast de eigen stem.",
+    "antwoord": "Een kiezer mag naast zijn eigen stem maximaal twee volmachtstemmen uitbrengen. Dit betekent dat een gemachtigde voor maximaal twee andere kiezers mag stemmen. De volmachtstem moet altijd tegelijk met de eigen stem worden uitgebracht. Bij een onderhandse volmacht moet de gemachtigde een kopie van het identiteitsbewijs van de volmachtgever kunnen tonen; bij een schriftelijke volmacht is dit niet nodig. Let op dat volmachtgever en gemachtigde in dezelfde gemeente moeten wonen en stemrecht bij dezelfde verkiezing moeten hebben.",
+    "bronnen": [
+      "Bekijk stembureau-instructie voor de dag van stemming (hand out)",
+      "Bekijk de toegankelijke versies van de stempas en schriftelijke volmacht",
+      "Wettelijke voorschriften stemming voor stembureauleden"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 4,
+    "vraag": "Wanneer moeten de stempassen uiterlijk bij de kiezers zijn?",
+    "verwacht": "Uiterlijk woensdag 4 maart 2026.",
+    "antwoord": "Stempassen moeten uiterlijk woensdag 4 maart 2026 in het bezit zijn van de kiezer. Dit is een wettelijke termijn volgens artikel J 7, tweede lid, van de Kieswet. Gemeenten kunnen kiezers proactief informeren over de verzending om te voorkomen dat kiezers dit pas laat realiseren.",
+    "bronnen": [
+      "Download de verkiezingskalender voor de gemeenteraadsverkiezing 2026",
+      "Download de communicatiekalender gemeenteraadsverkiezing 2026",
+      "Organisatie stemming en telling GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 5,
+    "vraag": "Tot wanneer kan een kiezer mondeling een vervangende stempas aanvragen?",
+    "verwacht": "Uiterlijk dinsdag 17 maart 2026 om 12.00 uur, op het gemeentehuis.",
+    "antwoord": "Een kiezer kan mondeling een vervangende stempas aanvragen tot en met dinsdag 17 maart 2026, 12.00 uur. Deze aanvraag doet hij op het gemeentehuis. Bij een goedgekeurd verzoek ontvangt de kiezer de vervangende stempas direct; de originele stempas wordt dan ongeldig. Neem een geldig identiteitsbewijs mee. Let op: voor schriftelijke aanvragen geldt een eerdere deadline (vrijdag 13 maart), maar vanwege vertragingen in de postbezorging wordt aangeraden kiezers aan te sporen tijdig aan te vragen of alternatieve bezorgmethoden te overwegen.",
+    "bronnen": [
+      "Organisatie stemming en telling GR26",
+      "Bekijk de Nieuwsbrief Verkiezingen Februari 2026, Nr. 11",
+      "Voorbeeldtekst aanvragen vervangende stempas",
+      "Download de communicatiekalender gemeenteraadsverkiezing 2026"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 6,
+    "vraag": "Welke identiteitsbewijzen zijn geldig bij het stembureau?",
+    "verwacht": "Een paspoort, rijbewijs of identiteitskaart van Nederland of een ander EU-land. Ook een Nederlands vreemdelingendocument is toegestaan. Het document mag niet meer dan 5 jaar verlopen zijn (minimaal geldig tot 19 maart 2021). Bij een gestolen of vermist identiteitsbewijs mag een verklaring van vermissing van de gemeente worden getoond, in combinatie met een pasje met naam en foto.",
+    "antwoord": "Bij de gemeenteraadsverkiezingen in 2026 zijn de volgende identiteitsbewijzen geldig: een Nederlands paspoort, rijbewijs of identiteitskaart. Kiezers met een dubbele nationaliteit mogen zich ook identificeren met een paspoort, identiteitskaart of rijbewijs uit andere EU-lidstaten, IJsland, Liechtenstein of Noorwegen, of met een paspoort of identiteitskaart uit Zwitserland. Een belangrijk aandachtspunt is dat de geldigheid van het document op de dag van stemming maximaal vijf jaar mag zijn verlopen. Per januari 2026 zijn er vijf nieuwe geldige documenten toegevoegd, die zijn opgenomen in een apart addendum dat aan de bestaande brochure moet worden toegevoegd. Twijfelt een stembureaulid over de echtheid of komt een document niet in de brochure voor, dan wordt geadviseerd contact op te nemen met het Informatiepunt Verkiezingen.",
+    "bronnen": [
+      "Brochure geldige identiteitsbewijzen",
+      "Nieuwsbrief Verkiezingen januari 2026 Nr. 10"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 7,
+    "vraag": "Wanneer is een stem geldig?",
+    "verwacht": "Als een stemvakje helemaal of voor een deel rood is gemaakt. Het maakt niet uit of dit met een kruisje, vinkje of op andere wijze is gedaan.",
+    "antwoord": "Een stem is geldig wanneer er precies één stemvakje is ingekleurd, zodat de keuze van de kiezer duidelijk is. Het stembiljet mag geen tekst of tekening bevatten waaruit de identiteit van de kiezer kan worden afgeleid, omdat het stemgeheim gewaarborgd moet blijven. Een stem is ongeldig als meerdere vakjes zijn ingekleurd of als een kandidaatnaam is opgeschreven in plaats van een vakje in te kleuren. Opvallend is dat rood kleuren náást een stemvakje de stem niet ongeldig maakt, evenals een rood stipje in een ander vakje naast het volledig gekleurde vakje. Echter, als meer dan één vakje helemaal of voor een deel rood is gemaakt, is de stem ongeldig.",
+    "bronnen": [
+      "Document geldige/ongeldige stemmen"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 8,
+    "vraag": "Wanneer is een stem ongeldig?",
+    "verwacht": "Als de keuze voor een kandidaat op een andere manier is gemaakt dan het inkleuren van een stemvakje en hierbij geen stemvakje (deels) rood is gemaakt.",
+    "antwoord": "Een stem is ongeldig als het stembiljet niet volgens de wettelijke voorschriften is ingevuld. Concreet is een stem ongeldig wanneer:\n* Er meer dan één stemvakje (geheel of gedeeltelijk) rood is gemaakt.\n* Er geen vakje is ingekleurd, maar bijvoorbeeld een naam van een kandidaat is opgeschreven.\n* Er een andere kleur dan rood is gebruikt.\n* Uit het biljet kan worden afgeleid wie de kiezer is, bijvoorbeeld door een naam of herkenbare handtekening.\n* Het stemgeheim niet gewaarborgd is omdat een stembureaulid de kiezer kan identificeren.\n\nEen uitzondering is een rood stipje naast een volledig gekleurd vakje; dit maakt de stem niet ongeldig, omdat wordt verondersteld dat dit komt door het rusten van het potlood. Het stembureau beslist uiteindelijk op basis van de Kieswet.",
+    "bronnen": [
+      "Document geldige/ongeldige stemmen"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 9,
+    "vraag": "Wat is het verschil tussen decentrale en centrale stemopneming?",
+    "verwacht": "Bij decentrale stemopneming tellen de stembureaus op de avond van de stemming de stemmen per lijst en per kandidaat. Bij centrale stemopneming tellen de stembureaus alleen per lijst; het GSB telt de volgende dag de stemmen op kandidaats- en lijstniveau.",
+    "antwoord": "Bij decentrale stemopneming tellen de stembureaus op de avond van de stemming direct de stemmen per lijst én per kandidaat. De volgende dag controleert het gemeentelijk stembureau de processen-verbaal en worden bij fouten stemmen opnieuw geteld, met correcties via een corrigendum. Bij centrale stemopneming tellen de stembureaus alleen de stemmen per lijst op de avond zelf; de telling per kandidaat gebeurt de volgende dag door het gemeentelijk stembureau tijdens een openbare zitting. Een belangrijk aandachtspunt is dat een gemeente die voor centrale stemopneming kiest dit voor elke verkiezing opnieuw moet vastleggen in een besluit, dat uiterlijk op maandag 2 februari 2026 gepubliceerd moet worden. Voor decentrale stemopneming hoeft de gemeente niets te doen.",
+    "bronnen": [
+      "Organisatie stemming en telling GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 10,
+    "vraag": "Wat is een ondersteuningsverklaring?",
+    "verwacht": "Een schriftelijke verklaring (model H 4) die een kiezer aflegt bij de gemeente, waarmee de kiezer laat zien dat deze de deelname van een partij aan de gemeenteraadsverkiezing ondersteunt.",
+    "antwoord": "Een ondersteuningsverklaring is een schriftelijke verklaring (model H 4) die een kiezer bij zijn gemeente aflegt om de deelname van een politieke partij aan de gemeenteraadsverkiezing te ondersteunen. Let op: met deze verklaring verklaart de kiezer niet op die partij te gaan stemmen. Een kiezer mag er maar één afleggen en kan deze, eenmaal ingeleverd, niet meer intrekken. Het afleggen is gratis voor de kiezer. Ondersteuningsverklaringen zijn alleen nodig voor partijen die voor het eerst meedoen of bij de vorige verkiezing geen zetel behaalden. Het aantal benodigde verklaringen hangt af van de gemeenteraadsgrootte: 10 bij minder dan 19 zetels, 20 bij 19 tot 39 zetels, en 30 bij 39 of meer zetels. Kiezers kunnen de verklaring afleggen van maandag 19 januari tot en met maandag 2 februari 2026, met extra mogelijkheden op 4 en 5 februari voor partijen die dan nog niet voldoende geldige verklaringen hebben. Het is strafbaar om zich te laten omkopen voor het afleggen van een ondersteuningsverklaring.",
+    "bronnen": [
+      "Bekijk instructies ondersteuningsverklaringen"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 11,
+    "vraag": "Wanneer kunnen ondersteuningsverklaringen worden afgelegd?",
+    "verwacht": "Van maandag 19 januari tot en met maandag 2 februari 2026, en ook op 4 en 5 februari 2026 (tijdens het herstel van verzuimen).",
+    "antwoord": "Ondersteuningsverklaringen kunnen worden afgelegd in twee periodes:\n- De hoofdperiode loopt van maandag 19 januari tot en met maandag 2 februari 2026.\n- Een extra periode op woensdag 4 en donderdag 5 februari 2026, speciaal voor partijen die op de dag van kandidaatstelling nog niet voldoende geldige verklaringen hebben ingeleverd.\n\nLet op: alleen politieke partijen zonder zetel in de gemeenteraad zijn verplicht ondersteuningsverklaringen in te dienen. De kiesgerechtigdheid voor gemeenteraadsverkiezingen is complex, dus zorg dat medewerkers hierin ondersteund worden. Communiceer duidelijk met partijen over het proces in uw gemeente, zoals of zij direct terecht kunnen of een afspraak moeten maken.",
+    "bronnen": [
+      "Registratie en kandidaatstelling GR26",
+      "Nieuwsbrief Verkiezingen januari 2026 Nr. 10",
+      "Organisatie stemming en telling GR26",
+      "Bekijk Instructie kandidaatstelling voor gemeenten"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 12,
+    "vraag": "Hoeveel waarborgsom moet een nieuwe partij betalen om mee te doen?",
+    "verwacht": "225 euro.",
+    "antwoord": "Een nieuwe partij zonder zetel in de gemeenteraad moet voor kandidaatstelling een waarborgsom van € 225 betalen. Deze betaling moet uiterlijk op de veertiende dag vóór de kandidaatstelling ontvangen zijn, met een betalingsbewijs dat wordt vastgelegd in model H 12. Het niet overleggen op de kandidaatstellingsdag is een herstelbaar verzuim. Voor de registratie van de partijnaam (aanduiding) geldt eerder een waarborgsom van € 112,50. Uitzonderingen voor de betaling van € 225 zijn onder meer partijen die bij de vorige verkiezing minstens één zetel behaalden, partijen die deelnemen via een gezamenlijke lijst waarbij ten minste één partij een zetel had, en bepaalde partijfusies. Bij een blanco lijst moet altijd een waarborgsom worden betaald, die wordt terugbetaald als geen geldige lijst is ingeleverd of bij ten minste 75% van de kiesdeler.",
+    "bronnen": [
+      "Registratie en kandidaatstelling GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 13,
+    "vraag": "Wat is een samenvoeging van aanduidingen?",
+    "verwacht": "Dat houdt in dat 2 of meer partijen gezamenlijk een kandidatenlijst inleveren met daarboven de samenvoeging van hun partijnamen of afkortingen. Deze samengevoegde aanduiding komt ook op het stembiljet te staan.",
+    "antwoord": "Een samenvoeging van aanduidingen houdt in dat twee of meer politieke partijen gezamenlijk één kandidatenlijst inleveren. Boven die gezamenlijke kandidatenlijst komt dan de samengevoegde aanduiding te staan, bestaande uit de partijnamen of afkortingen van de deelnemende partijen. Alleen partijen die geregistreerd zijn, kunnen hun aanduidingen op deze manier samenvoegen. Dit moet gebeuren op de dag van kandidaatstelling.",
+    "bronnen": [
+      "Registratie en kandidaatstelling GR26",
+      "instructie registratie voor gemeenten"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 14,
+    "vraag": "Wanneer kan OSV2020-KS gedownload worden?",
+    "verwacht": "Vanaf 5 januari 2026.",
+    "antwoord": "OSV2020-KS kan worden gedownload vanaf 5 januari 2026. De software wordt beschikbaar gesteld via het overdrachtsplatform Uitwisseling. Het is bedoeld voor centraal stembureaus om taken voor de kandidaatstelling uit te voeren, zoals het inlezen van de USB-stick en het invoeren van verzuimen.",
+    "bronnen": [
+      "Gebruik ondersteunende software GR26",
+      "Registratie en kandidaatstelling GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 15,
+    "vraag": "Is het gebruik van de uitslagprogrammatuur van de Kiesraad verplicht?",
+    "verwacht": "Ja, de Wet programmatuur verkiezingsuitslagen (Wpv) maakt het gebruik verplicht voor gemeenten tijdens de uitslagvaststelling.",
+    "antwoord": "Ja, het gebruik van de uitslagprogrammatuur van de Kiesraad is verplicht voor gemeenten bij verkiezingen die onder de Kieswet vallen. Deze verplichting is vastgelegd in de Wet programmatuur verkiezingsuitslagen (Wpv) die op 1 augustus 2025 in werking is getreden. De verplichting geldt voor gebruikers in Europees Nederland en niet voor Caribisch Nederland. Gemeenten moeten voldoen aan de aansluit- en gebruiksvoorschriften die de Kiesraad vaststelt, en het college van burgemeester en wethouders moet twee dagen voor de verkiezing een verklaring ondertekenen dat hieraan wordt voldaan.",
+    "bronnen": [
+      "Samenwerkingsprotocol Wet programmatuur verkiezingsuitslagen",
+      "Overzicht GR26",
+      "Gebruik ondersteunende software GR26",
+      "Nieuwsbrief Verkiezingen augustus 2025 Nr. 3",
+      "Uitvoeringsplan GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 16,
+    "vraag": "Wanneer levert de Kiesraad de uitslagprogrammatuur?",
+    "verwacht": "21 dagen voor de dag van stemming.",
+    "antwoord": "De Kiesraad levert de uitslagprogrammatuur uiterlijk 21 dagen (drie weken) voor de dag van stemming. Voor de gemeenteraadsverkiezingen van 2026 betekent dit een uiterste beschikbaarstellingsdatum van woensdag 25 februari 2026. De meeste gemeenten gebruiken daarbij OSV2020-U, terwijl 14 gemeenten de software Abacus inzetten. De Kiesraad draagt bij deze verkiezingen de kosten voor ondersteuning bij de uitslagprogrammatuur. Het gebruik van deze programmatuur is verplicht volgens de Wet programmatuur verkiezingsuitslagen.",
+    "bronnen": [
+      "Uitvoeringsplan GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 17,
+    "vraag": "Tot wanneer kan een kiezer schriftelijk een vervangende stempas of volmacht aanvragen?",
+    "verwacht": "Uiterlijk vrijdag 13 maart 2026.",
+    "antwoord": "Een kiezer kan schriftelijk een vervangende stempas of een schriftelijke volmacht aanvragen tot en met vrijdag 13 maart 2026. Let wel op: door het aangepaste postbezorgkader is de kans groter dat een pas die op het laatste moment wordt aangevraagd niet meer tijdig aankomt. Daarom wordt geadviseerd om alternatieve bezorgmethoden te overwegen, zoals het inzetten van bodes of koeriersdiensten (PostNL kan hierbij ondersteunen), of de kiezer te vragen het document op te halen bij het gemeentehuis. Het is ook goed kiezers op te roepen aanvragen tijdig in te dienen.",
+    "bronnen": [
+      "Organisatie stemming en telling GR26",
+      "Bekijk de Nieuwsbrief Verkiezingen Februari 2026, Nr. 11",
+      "Download de communicatiekalender gemeenteraadsverkiezing 2026",
+      "Bekijk de toegankelijke versies van de stempas en schriftelijke volmacht",
+      "Download de verkiezingskalender voor de gemeenteraadsverkiezing 2026"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 18,
+    "vraag": "Tot wanneer kan beroep worden ingesteld tegen afwijzing van een registratie?",
+    "verwacht": "Uiterlijk de 6e dag na bekendmaking van het besluit in het Gemeenteblad. Beroep bij de Afdeling bestuursrechtspraak van de Raad van State kan uiterlijk tot dinsdag 10 februari 2026.",
+    "antwoord": "Beroep tegen afwijzing van een registratie kan worden ingesteld uiterlijk op de 6e dag na de bekendmaking van het besluit in het Gemeenteblad. Het beroep moet worden ingediend bij de Afdeling bestuursrechtspraak van de Raad van State. Deze termijn geldt voor besluiten over zowel registratieverzoeken als besluiten over niet-doorwerking van een landelijk of provinciaal geregistreerde aanduiding.",
+    "bronnen": [
+      "Registratie en kandidaatstelling GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 19,
+    "vraag": "Welk model wordt gebruikt voor het proces-verbaal van een stembureau bij decentrale stemopneming?",
+    "verwacht": "Model N 10-1.",
+    "antwoord": "Voor het proces-verbaal van een stembureau bij decentrale stemopneming wordt Model N 10-1 gebruikt. Bij decentrale stemopneming telt het stembureau op de dag van stemming zelf de stemmen per lijst en per kandidaat. In het proces-verbaal moet het stembureau gedurende de dag alle gebeurtenissen noteren die verschillen tussen het aantal toegelaten kiezers en de uitgebrachte stemmen kunnen verklaren, zoals kiezers die het stembiljet meenemen. Ook moeten andere bijzonderheden die invloed kunnen hebben op het stemproces of de resultaten worden vastgelegd, bijvoorbeeld stembureauleden die te laat waren of niet-werkende techniek. Het proces-verbaal moet verplicht worden ondertekend door de voorzitter en twee leden van het stembureau, met de optie voor andere aanwezige leden om ook te ondertekenen. Er is een .odt-versie van dit model specifiek voor de gemeenteraadsverkiezingen en een algemene .pdf-versie voor alle verkiezingen.",
+    "bronnen": [
+      "Model N 10-1 (Proces-verbaal stembureau)",
+      "Overzicht GR26",
+      "Organisatie stemming en telling GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 20,
+    "vraag": "Wat moet een gemachtigde doen bij het uitbrengen van een volmachtstem?",
+    "verwacht": "De gemachtigde moet de volmachtstem tegelijk uitbrengen met de eigen stem, en stemmen zoals de persoon voor wie wordt gestemd heeft aangegeven.",
+    "antwoord": "Een gemachtigde moet bij het uitbrengen van een volmachtstem het volmachtbewijs overhandigen aan de voorzitter van het stembureau. Bij een onderhandse volmacht (via de stempas) moet de gemachtigde ook een kopie van het identiteitsbewijs van de volmachtgever meenemen, die niet langer dan 5 jaar verlopen is. De volmachtstem moet altijd tegelijk met de eigen stem worden uitgebracht. De gemachtigde moet wonen in dezelfde gemeente als de volmachtgever en mag voor maximaal twee andere kiezers stemmen. Het is belangrijk dat de gemachtigde de stem uitbrengt zoals de volmachtgever dat heeft aangegeven.",
+    "bronnen": [
+      "Wettelijke voorschriften stemming voor stembureauleden",
+      "Bekijk de toegankelijke versies van de stempas en schriftelijke volmacht",
+      "Voorbeeldtekst kennisgeving stemmen bij volmacht",
+      "Bekijk stembureau-instructie voor de dag van stemming (hand out)"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 21,
+    "vraag": "Mag ik als 16-jarige stemmen bij de gemeenteraadsverkiezingen?",
+    "verwacht": "Nee, je moet op de dag van stemming 18 jaar of ouder zijn.",
+    "antwoord": "Nee, je mag niet stemmen als je 16 jaar oud bent bij de gemeenteraadsverkiezingen. De bronnen bevatten geen informatie over de stemgerechtigde leeftijd voor deze verkiezingen. De Toolkit Verkiezingen richt zich op de organisatie en communicatie door gemeenten, niet op de wettelijke kiesgerechtigde leeftijd. Voor een definitief antwoord over de stemleeftijd moet je de officiële Kieswet of de informatie van de Kiesraad raadplegen.",
+    "bronnen": [
+      "Nieuwsbrief Verkiezingen september 2025 Nr. 4"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 26,
+    "vraag": "Hoe kan ik me als kandidaat aanmelden voor de Europese Parlementsverkiezingen?",
+    "verwacht": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "antwoord": "Voor de Europese Parlementsverkiezingen moet u als kandidaat een kandidatenlijst indienen met behulp van het daarvoor bestemde formulier (Model H 1). U moet ook een instemmingsverklaring (Model H 9) indienen, waarmee u akkoord gaat met uw plaatsing op de lijst. Bent u nog geen lid van het vertegenwoordigend orgaan, dan moet u een kopie van een geldig identiteitsbewijs bij die instemmingsverklaring voegen. Daarnaast kan het nodig zijn dat uw politieke groepering een machtiging indient om een aanduiding boven de lijst te plaatsen (Model H 3-1 of H 3-2).",
+    "bronnen": [
+      "Model H 1 (Kandidatenlijst)",
+      "Model H 3-1 (Machtiging om aanduiding boven kandidatenlijst te plaatsen)",
+      "Model H 3-2 (Machtiging om samengevoegde aanduiding boven kandidatenlijst te plaatsen)",
+      "Model H 9 (Instemmingsverklaring)"
+    ],
+    "type": "strikvraag"
+  },
+  {
+    "id": 27,
+    "vraag": "Kan de burgemeester voorzitter van het gemeentelijk stembureau (GSB) zijn?",
+    "verwacht": "Nee, de burgemeester is voorzitter van het centraal stembureau (CSB). Leden van het CSB zijn andere personen dan de leden van het GSB, dus de burgemeester kan niet ook lid of voorzitter van het GSB zijn.",
+    "antwoord": "Nee, de burgemeester kan geen voorzitter van het gemeentelijk stembureau (GSB) zijn. Een lid van het GSB mag namelijk niet (plaatsvervangend) lid zijn van het centraal stembureau (CSB) in dezelfde gemeente. Aangezien de burgemeester volgens de Kieswet de voorzitter van het CSB is, is combinatie van deze functies uitgesloten. De leden van het GSB, waaronder de voorzitter, worden benoemd door het college van burgemeester en wethouders.",
+    "bronnen": [
+      "Instructie het gemeentelijk stembureau",
+      "Overzicht GR26",
+      "Bekijk Instructie het centraal stembureau",
+      "instructie registratie voor gemeenten"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 28,
+    "vraag": "Kun je met een kiezerspas ook een volmacht uitbrengen bij de gemeenteraadsverkiezingen?",
+    "verwacht": "Bij de gemeenteraadsverkiezingen is er geen kiezerspas. Er is een stempas. Voor het uitbrengen van een volmacht is een apart volmachtbewijs of een ondertekende volmacht op de stempas nodig.",
+    "antwoord": "Ja, dat kan. Een volmacht kan worden verleend door overdracht van de kiezerspas aan een gemachtigde, naast de mogelijkheid via een schriftelijke aanvraag. De gemachtigde moet in dezelfde gemeente wonen als de volmachtgever en moet de volmachtstem tegelijk met de eigen stem uitbrengen. Let op: een kiezer aan wie een kiezerspas is verstrekt, kan geen schriftelijke aanvraag voor volmacht indienen, maar wel via overdracht van de pas. De volmachtgever en gemachtigde moeten beide de kiezerspas ondertekenen om deze om te zetten in een volmachtbewijs.",
+    "bronnen": [
+      "Wettelijke voorschriften stemming voor stembureauleden",
+      "Voorbeeldtekst kennisgeving stemmen bij volmacht"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 29,
+    "vraag": "Is de invoer van telresultaten in OSV2020-U tijdens de zitting van het GSB openbaar?",
+    "verwacht": "Ja, de gehele zitting van het GSB is openbaar, net zoals de telling in het stembureau.",
+    "antwoord": "Ja, de invoer van telresultaten in OSV2020-U tijdens de zitting van het GSB is openbaar. De GSB-zitting is net zoals de telling in het stembureau openbaar. Dit betekent dat het hele proces, inclusief de invoer van de aantallen in de software, publiekelijk toegankelijk is.",
+    "bronnen": [
+      "Organisatie stemming en telling GR26"
+    ],
+    "type": "gewoon"
+  },
+  {
+    "id": 22,
+    "vraag": "Wat zijn de openingstijden van de stembureaus bij de Provinciale Statenverkiezingen?",
+    "verwacht": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "antwoord": "De openingstijden voor reguliere stembureaus bij de Provinciale Statenverkiezingen worden niet specifiek genoemd in de aangeleverde bronpassages. De passages vermelden alleen de openingstijden voor de gemeenteraadsverkiezingen 2026, namelijk van 7.30 tot 21.00 uur. Voor bijzondere of mobiele stembureaus kunnen gemeenten afwijkende tijden vaststellen, waarbij ze eerder of later open mogen gaan en eerder (niet later) mogen sluiten.",
+    "bronnen": [
+      "Bekijk stembureau-instructie voor de dag van stemming (hand out)",
+      "V"
+    ],
+    "type": "strikvraag"
+  },
+  {
+    "id": 23,
+    "vraag": "Hoeveel zetels heeft de gemeenteraad van Amsterdam?",
+    "verwacht": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "antwoord": "Het exacte aantal zetels voor de gemeenteraad van Amsterdam kan ik niet vinden in de aangeleverde bronpassages. De bronnen geven alleen algemene informatie over de omvang van gemeenteraden, zoals dat de grootste raden 45 leden hebben in gemeenten met meer dan 200.000 inwoners, maar noemen geen specifieke gemeenten.",
+    "bronnen": [
+      "Gemeenteraadsverkiezingen"
+    ],
+    "type": "strikvraag"
+  },
+  {
+    "id": 24,
+    "vraag": "Kan ik elektronisch stemmen bij de gemeenteraadsverkiezingen?",
+    "verwacht": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "antwoord": "Nee, uit de bronnen blijkt niet dat elektronisch stemmen een mogelijkheid is bij de gemeenteraadsverkiezingen. De informatie gaat over stemmen met een stempas in een stemlokaal, stemmen bij volmacht en het gebruik van een verlopen identiteitsbewijs. De technische voorbereidingen die worden genoemd, zoals de verklaring over de aansluitvoorschriften voor de uitslagprogrammatuur, hebben betrekking op het verwerken van de resultaten, niet op het elektronisch uitbrengen van een stem.",
+    "bronnen": [
+      "Download de communicatiekalender gemeenteraadsverkiezing 2026",
+      "Nieuwsbrief Verkiezingen september 2025 Nr. 4"
+    ],
+    "type": "strikvraag"
+  },
+  {
+    "id": 25,
+    "vraag": "Wie is de huidige minister van Binnenlandse Zaken?",
+    "verwacht": "Dat kan ik niet vinden in de Toolkit Verkiezingen.",
+    "antwoord": "De bronnen vermelden niet wie de huidige minister van Binnenlandse Zaken en Koninkrijksrelaties is. De Toolkit Verkiezingen is een uitgave van het ministerie, maar noemt geen namen van bewindspersonen.",
+    "bronnen": [
+      "Bekijk de Nieuwsbrief Verkiezingen Februari 2026, Nr. 11"
+    ],
+    "type": "strikvraag"
+  }
+]
