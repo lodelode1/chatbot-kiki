@@ -46,18 +46,19 @@ def _get_api_key():
     return key
 
 TOP_K = 10
-MAX_CONTEXT_CHARS = 10000
+MAX_CONTEXT_CHARS = 12000
 MIN_SCORE = 0.30
 
 SYSTEM_PROMPT = """Je bent Kiki, een vriendelijke en deskundige assistent over de gemeenteraadsverkiezingen 2026 in Nederland. Je helpt medewerkers van gemeenten met vragen over het verkiezingsproces op basis van de Toolkit Verkiezingen van de Kiesraad.
 
 REGELS:
 1. Baseer je antwoord UITSLUITEND op de aangeleverde bronpassages. Verzin geen informatie die niet in de bronnen staat.
-2. Geef een helder en bondig antwoord van 2 tot 5 zinnen. Kom meteen ter zake — geen inleidingen. Alleen bij complexe procedures mag je iets langer uitweiden.
+2. Geef een helder en volledig antwoord van 3 tot 10 zinnen. Kom meteen ter zake — geen inleidingen. Bij procedures: leg stap voor stap uit. Noem relevante details, uitzonderingen en aandachtspunten die in de bronnen staan.
 3. Gebruik opsommingen als dat de leesbaarheid verbetert.
 4. Als het antwoord niet in de bronnen te vinden is, zeg dan: "Dat kan ik niet vinden in de Toolkit Verkiezingen."
 5. Antwoord altijd in het Nederlands.
-6. Als de bronnen specifieke getallen, modelnummers of datums bevatten, neem deze letterlijk over — parafraseer geen cijfers."""
+6. Als de bronnen specifieke getallen, modelnummers of datums bevatten, neem deze letterlijk over — parafraseer geen cijfers.
+7. Gebruik GEEN inline bronverwijzingen zoals [1] of [bron 2] in je lopende tekst."""
 
 
 class QAEngine:
@@ -181,49 +182,82 @@ class QAEngine:
         combined.sort(key=lambda x: x["score"], reverse=True)
         return combined[:top_k]
 
-    def build_context(self, chunks: list[dict]) -> str:
-        """Bouw de context-tekst op uit genummerde chunks, beperkt tot MAX_CONTEXT_CHARS."""
+    def build_context(self, chunks: list[dict]) -> tuple[str, int]:
+        """Bouw de context-tekst op uit genummerde chunks, beperkt tot MAX_CONTEXT_CHARS.
+
+        Returns:
+            tuple van (context_tekst, aantal_chunks_in_context)
+        """
         context_parts = []
         total_chars = 0
+        chunks_included = 0
         for i, chunk in enumerate(chunks, 1):
             part = f"[{i}]\n{chunk['text']}\n"
             if total_chars + len(part) > MAX_CONTEXT_CHARS:
-                remaining = MAX_CONTEXT_CHARS - total_chars
-                if remaining > 100:
-                    context_parts.append(part[:remaining] + "...")
                 break
             context_parts.append(part)
             total_chars += len(part)
-        return "\n".join(context_parts)
+            chunks_included = i
+        return "\n".join(context_parts), chunks_included
 
     def _get_sources_by_indices(self, chunks: list[dict], indices: list[int]) -> list[dict]:
-        """Verzamel bronnen op basis van passage-nummers die de LLM heeft aangegeven."""
+        """Verzamel bronnen op basis van passage-nummers die de LLM heeft aangegeven.
+
+        Deduplicatie per unieke pagina (bron_url zonder fragment).
+        """
         seen = set()
         sources = []
         for idx in indices:
             if idx < 0 or idx >= len(chunks):
                 continue
             chunk = chunks[idx]
-            key = chunk["bron_url"]
-            if key and key not in seen:
-                seen.add(key)
-                sources.append({
-                    "titel": chunk["titel"],
-                    "url": chunk["bron_url"],
-                    "sectie": chunk["sectie"],
-                })
+            url = chunk.get("bron_url", "")
+            if not url:
+                continue
+            # Dedupliceer op basis-URL (zonder # fragment)
+            base_url = url.split("#")[0]
+            if base_url in seen:
+                continue
+            seen.add(base_url)
+            sources.append({
+                "titel": chunk["titel"],
+                "url": url,
+                "sectie": chunk.get("sectie", ""),
+            })
         return sources
 
-    def _parse_used_passages(self, answer: str) -> tuple[str, list[int]]:
-        """Haal passage-nummers uit het LLM-antwoord en strip die regel."""
-        # Zoek patroon zoals "GEBRUIKTE PASSAGES: 1, 3, 5" of "GEBRUIKTE PASSAGES: [1, 3]"
-        match = re.search(r"GEBRUIKTE PASSAGES:\s*\[?([\d,\s]+)\]?", answer, re.IGNORECASE)
-        if match:
-            nums = re.findall(r"\d+", match.group(1))
-            indices = [int(n) - 1 for n in nums]  # 1-indexed → 0-indexed
-            clean = answer[:match.start()].strip()
-            return clean, indices
-        return answer.strip(), []
+    def _parse_used_passages(self, answer: str, max_chunk_num: int) -> tuple[str, list[int]]:
+        """Haal passage-nummers uit het LLM-antwoord en strip die regel.
+
+        Args:
+            answer: het ruwe LLM-antwoord
+            max_chunk_num: hoogste passagenummer dat in de context zat (1-indexed)
+        """
+        # Probeer meerdere patronen voor de GEBRUIKTE PASSAGES regel
+        patterns = [
+            r"GEBRUIKTE PASSAGES:\s*\[?([\d,\s]+)\]?",
+            r"Gebruikte passages:\s*\[?([\d,\s]+)\]?",
+            r"Bronnen?:\s*\[?([\d,\s]+)\]?",
+            r"Passages?:\s*\[?([\d,\s]+)\]?",
+        ]
+        clean = answer
+        indices = []
+        for pattern in patterns:
+            match = re.search(pattern, answer, re.IGNORECASE)
+            if match:
+                nums = re.findall(r"\d+", match.group(1))
+                # Filter: alleen nummers accepteren die in de context zaten
+                indices = [int(n) - 1 for n in nums if 1 <= int(n) <= max_chunk_num]
+                clean = answer[:match.start()].strip()
+                break
+
+        # Strip inline referenties zoals [1], [bron 2], (bron 3) uit het antwoord
+        clean = re.sub(r"\[(?:bron\s*)?\d+\]", "", clean)
+        clean = re.sub(r"\((?:bron\s*)\d+\)", "", clean)
+        # Verwijder dubbele spaties die overblijven
+        clean = re.sub(r"  +", " ", clean).strip()
+
+        return clean, indices
 
     def ask(self, question: str) -> dict:
         """
@@ -233,14 +267,17 @@ class QAEngine:
             dict met 'answer', 'sources', en 'chunks'
         """
         chunks = self.search(question)
-        context = self.build_context(chunks)
+        context, chunks_in_context = self.build_context(chunks)
 
         user_prompt = (
-            f"Hieronder staan genummerde passages uit de Toolkit Verkiezingen.\n\n"
+            f"Hieronder staan {chunks_in_context} genummerde passages uit de Toolkit Verkiezingen.\n\n"
             f"BRONPASSAGES:\n\n{context}\n\n"
             f"VRAAG VAN DE GEBRUIKER: {question}\n\n"
-            f"Geef een helder en bondig antwoord op basis van de bovenstaande bronnen.\n"
-            f"Sluit af met exact deze regel: GEBRUIKTE PASSAGES: [nummers]"
+            f"Geef een helder en volledig antwoord op basis van de bovenstaande bronnen. "
+            f"Noem relevante details, uitzonderingen en aandachtspunten.\n"
+            f"BELANGRIJK: Gebruik GEEN inline bronverwijzingen zoals [1] of [bron 2] in je antwoord.\n"
+            f"Sluit af met exact deze regel op een nieuwe regel: GEBRUIKTE PASSAGES: [nummers]\n"
+            f"Gebruik alleen passagenummers van 1 tot {chunks_in_context}."
         )
 
         try:
@@ -253,7 +290,7 @@ class QAEngine:
                 temperature=0.3,
             )
             answer = response.choices[0].message.content
-            answer, used_indices = self._parse_used_passages(answer)
+            answer, used_indices = self._parse_used_passages(answer, chunks_in_context)
         except Exception as e:
             answer = f"Er ging iets mis bij het genereren van het antwoord: {e}"
             used_indices = []
@@ -262,8 +299,8 @@ class QAEngine:
         if used_indices:
             sources = self._get_sources_by_indices(chunks, used_indices)
         else:
-            # Fallback: top-1 bron als de LLM geen passages aangaf
-            sources = self._get_sources_by_indices(chunks, [0])
+            # Fallback: bronnen van ALLE chunks die in de context zaten
+            sources = self._get_sources_by_indices(chunks, list(range(chunks_in_context)))
 
         return {
             "answer": answer,
@@ -278,16 +315,18 @@ class QAEngine:
         Hergebruikt dezelfde zoekresultaten maar vraagt de LLM om meer detail.
         """
         chunks = self.search(question)
-        context = self.build_context(chunks)
+        context, chunks_in_context = self.build_context(chunks)
 
         user_prompt = (
-            f"Hieronder staan genummerde passages uit de Toolkit Verkiezingen.\n\n"
+            f"Hieronder staan {chunks_in_context} genummerde passages uit de Toolkit Verkiezingen.\n\n"
             f"BRONPASSAGES:\n\n{context}\n\n"
             f"VRAAG VAN DE GEBRUIKER: {question}\n\n"
             f"Je gaf eerder dit korte antwoord: \"{short_answer}\"\n\n"
             f"Geef nu een uitgebreider en volledig antwoord. Leg de procedure stap voor stap uit "
             f"en behandel relevante details, uitzonderingen en aandachtspunten.\n"
-            f"Sluit af met exact deze regel: GEBRUIKTE PASSAGES: [nummers]"
+            f"BELANGRIJK: Gebruik GEEN inline bronverwijzingen zoals [1] of [bron 2] in je antwoord.\n"
+            f"Sluit af met exact deze regel op een nieuwe regel: GEBRUIKTE PASSAGES: [nummers]\n"
+            f"Gebruik alleen passagenummers van 1 tot {chunks_in_context}."
         )
 
         try:
@@ -300,7 +339,7 @@ class QAEngine:
                 temperature=0.3,
             )
             answer = response.choices[0].message.content
-            answer, used_indices = self._parse_used_passages(answer)
+            answer, used_indices = self._parse_used_passages(answer, chunks_in_context)
         except Exception as e:
             answer = f"Er ging iets mis bij het genereren van het antwoord: {e}"
             used_indices = []
@@ -308,7 +347,7 @@ class QAEngine:
         if used_indices:
             sources = self._get_sources_by_indices(chunks, used_indices)
         else:
-            sources = self._get_sources_by_indices(chunks, [0])
+            sources = self._get_sources_by_indices(chunks, list(range(chunks_in_context)))
 
         return {
             "answer": answer,
